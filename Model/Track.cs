@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model
 {
-    class Track
+    public class Track
     {
         public String Name { get; set; }
         public LinkedList<Section> Sections { get; set; }

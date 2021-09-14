@@ -12,7 +12,7 @@ namespace Model
         StartGrid,
         Finish
     }
-    class Section
+    public class Section
     {
         public SectionTypes SectionType { get; set; }
 
