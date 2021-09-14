@@ -31,7 +31,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\Sander\\source\\repos\\RaceSimulator\\Model\\Model.csproj": {
+                "projectPath": "C:\\Users\\Sander\\source\\repos\\RaceSimulator\\Model\\Model.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
