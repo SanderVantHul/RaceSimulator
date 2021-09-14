@@ -1,0 +1,13 @@
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.exe
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.deps.json
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.runtimeconfig.json
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.runtimeconfig.dev.json
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.dll
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\RaceSimulator.pdb
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.csproj.AssemblyReference.cache
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.AssemblyInfoInputs.cache
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.AssemblyInfo.cs
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.csproj.CoreCompileInputs.cache
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.dll
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.pdb
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.genruntimeconfig.cache
