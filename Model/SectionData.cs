@@ -11,12 +11,12 @@ namespace Model
         public IParticipant Right { get; set; }
         public int DistanceRight { get; set; }
 
-        public SectionData(IParticipant left, int distanceLeft, IParticipant right, int distanceRight)
+        public SectionData(IParticipant left, IParticipant right)
         {
             Left = left;
-            DistanceLeft = distanceLeft;
+            DistanceLeft = 0;
             Right = right;
-            DistanceRight = distanceRight;
+            DistanceRight = 0;
         }
     }
 }

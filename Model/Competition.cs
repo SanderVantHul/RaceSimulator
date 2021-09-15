@@ -9,10 +9,10 @@ namespace Model
         public List<IParticipant> Participants { get; set; }
         public Queue<Track> Tracks { get; set; }
 
-        public Competition(List<IParticipant> participants, Queue<Track> tracks)
+        public Competition()
         {
-            Participants = participants;
-            Tracks = tracks;
+            Participants = new List<IParticipant>();
+            Tracks = new Queue<Track>();
         }
 
         public Track NextTrack()

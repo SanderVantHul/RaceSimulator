@@ -11,12 +11,12 @@ namespace Model
         public int Speed { get; set; }
         public bool IsBroken { get; set; }
 
-        public Car(int quality, int performance, int speed, bool isBroken)
+        public Car()
         {
-            Quality = quality;
-            Performance = performance;
-            Speed = speed;
-            IsBroken = isBroken;
+            Quality = 0; 
+            Performance = 0;
+            Speed = 0;
+            IsBroken = false;
         }
     }
 }
