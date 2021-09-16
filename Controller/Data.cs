@@ -5,18 +5,19 @@ using Model;
 
 namespace Controller
 {
-    static class Data
+    public static class Data
     {
-        static Competition Competition { get; set; }
+        public static Competition Competition { get; set; }
+        public static Race CurrentRace { get; set; }
 
-        static void Initialize()
+        public static void Initialize()
         {
             Competition = new Competition();
             AddParticipants();
             AddTracks();
         }
 
-        static void AddParticipants()
+        public static void AddParticipants()
         {
             var d1 = new Driver("Michael", new Car(), TeamColors.Blue);
             var d2 = new Driver("Sebastian", new Car(), TeamColors.Green);
@@ -27,13 +28,22 @@ namespace Controller
             Competition.Participants.Add(d3);
         }
 
-        static void AddTracks()
+        public static void AddTracks()
         {
             var track = new Track("Circuit de Monaco", new SectionTypes[] 
                 {SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.RightCorner, 
                     SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.RightCorner});
 
             Competition.Tracks.Enqueue(track);
+        }
+
+        public static void NextRace()
+        {
+            if (!Competition.NextTrack().Equals(null))
+            {
+                CurrentRace = new Race(Competition.Tracks.Peek(), 
+                    Competition.Participants);
+            }
         }
     }
 }

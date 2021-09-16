@@ -5,7 +5,7 @@ using Model;
 
 namespace Controller
 {
-    class Race
+    public class Race
     {
         public Track Track { get; set; }
         public List<IParticipant> Participants { get; set; }

@@ -17,7 +17,16 @@ namespace Model
 
         public Track NextTrack()
         {
-            
+            try
+            {
+                return Tracks.Peek(); //todo remove track
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return null;
         }
     }
 }

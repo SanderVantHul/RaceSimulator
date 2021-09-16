@@ -11,3 +11,8 @@ C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1
 C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.dll
 C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.pdb
 C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.genruntimeconfig.cache
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\Controller.dll
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\Model.dll
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\Controller.pdb
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\bin\Debug\netcoreapp3.1\Model.pdb
+C:\Users\Sander\source\repos\RaceSimulator\RaceSimulator\obj\Debug\netcoreapp3.1\RaceSimulator.csproj.CopyComplete
