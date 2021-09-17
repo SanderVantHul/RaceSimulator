@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Controller;
+using Model;
 
 namespace RaceSimulator
 {
@@ -10,7 +11,10 @@ namespace RaceSimulator
         {
             Data.Initialize();
             Data.NextRace();
-            Console.WriteLine(Data.CurrentRace.Track.Name);
+            Track zwolle = new Track("Circuit Zwolle", new SectionTypes[] { SectionTypes.LeftCorner, 
+                SectionTypes.StartGrid, SectionTypes.LeftCorner, SectionTypes.Finish, SectionTypes.LeftCorner, 
+                SectionTypes.StartGrid, SectionTypes.LeftCorner, SectionTypes.StartGrid });
+            Visualize.DrawTrack(zwolle);
 
             for (; ; )
             {
