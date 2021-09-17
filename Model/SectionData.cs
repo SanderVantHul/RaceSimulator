@@ -10,13 +10,5 @@ namespace Model
         public int DistanceLeft { get; set; }
         public IParticipant Right { get; set; }
         public int DistanceRight { get; set; }
-
-        public SectionData(IParticipant left, IParticipant right)
-        {
-            Left = left;
-            DistanceLeft = 0;
-            Right = right;
-            DistanceRight = 0;
-        }
     }
 }

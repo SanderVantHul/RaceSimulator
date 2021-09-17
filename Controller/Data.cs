@@ -39,11 +39,9 @@ namespace Controller
 
         public static void NextRace()
         {
-            if (!Competition.NextTrack().Equals(null))
-            {
-                CurrentRace = new Race(Competition.Tracks.Peek(), 
-                    Competition.Participants);
-            }
+            var tempTrack = Competition.NextTrack();
+            CurrentRace = tempTrack != null ? 
+                new Race(tempTrack, new List<IParticipant>()) : null;
         }
     }
 }

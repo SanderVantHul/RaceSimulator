@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Model
@@ -15,18 +16,6 @@ namespace Model
             Tracks = new Queue<Track>();
         }
 
-        public Track NextTrack()
-        {
-            try
-            {
-                return Tracks.Peek(); //todo remove track
-            }
-            catch (InvalidOperationException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            return null;
-        }
+        public Track NextTrack() => Tracks.Any() ? Tracks.Dequeue() : null;
     }
 }

@@ -23,18 +23,14 @@ namespace Controller
             _positions = new Dictionary<Section, SectionData>();
         }
 
-        private SectionData GetSectionData(Section section)
+        public SectionData GetSectionData(Section section)
         {
-            try
-            { 
+            if (_positions.ContainsKey(section))
+            {
                 return _positions[section];
             }
-            catch (KeyNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-            }
 
-            var temp = new SectionData(null, null);
+            var temp = new SectionData();
             _positions.Add(section, temp);
             return temp;
         }
