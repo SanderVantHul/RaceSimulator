@@ -15,9 +15,12 @@ namespace RaceSimulator
             {
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner,
                 SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Finish,
-                SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.RightCorner
+                SectionTypes.RightCorner, SectionTypes.Straight,
             });
-            Visualize.DrawTrack(zwolle);
+
+            Track elburg = new Track("Circuit Elburg", new SectionTypes[] { SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.Finish, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.LeftCorner, SectionTypes.Straight, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.Straight, SectionTypes.LeftCorner, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.LeftCorner, SectionTypes.RightCorner, SectionTypes.RightCorner, SectionTypes.LeftCorner, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.Straight, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.StartGrid });
+            VisualizeConsole.Initialize();
+            VisualizeConsole.DrawTrack(elburg);
 
             for (; ; )
             {
