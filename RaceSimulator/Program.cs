@@ -11,9 +11,12 @@ namespace RaceSimulator
         {
             Data.Initialize();
             Data.NextRace();
-            Track zwolle = new Track("Circuit Zwolle", new SectionTypes[] { SectionTypes.LeftCorner, 
-                SectionTypes.StartGrid, SectionTypes.LeftCorner, SectionTypes.Finish, SectionTypes.LeftCorner, 
-                SectionTypes.StartGrid, SectionTypes.LeftCorner, SectionTypes.StartGrid });
+            Track zwolle = new Track("Circuit Zwolle", new SectionTypes[]
+            {
+                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner,
+                SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Finish,
+                SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.RightCorner
+            });
             Visualize.DrawTrack(zwolle);
 
             for (; ; )

@@ -8,8 +8,6 @@ namespace Model
     {
         Straight,
         LeftCorner,
-        LeftCornerMirrored,
-        RightcornerMirrored,
         RightCorner,
         StartGrid,
         Finish
