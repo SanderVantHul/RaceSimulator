@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 using Model;
+using Controller;
 
 namespace RaceSimulator
 {
@@ -18,23 +19,27 @@ namespace RaceSimulator
         }
 
         #region graphics
-        private static string[] _finishNorth = { "|  |", "|##|", "|  |", "|  |" };
-        private static string[] _finishEast = { "----", "  # ", "  # ", "----" };
-        private static string[] _finishSouth = { "|  |", "|  |", "|##|", "|  |" };
-        private static string[] _finishWest = { "----", " #  ", " #  ", "----" };
 
-        private static string[] _startGridNorth = { "|  |", "|^^|", "|  |", "|  |" };
-        private static string[] _startGridEast = { "----", "  > ", "  > ", "----" };
-        private static string[] _startGridSouth = { "|  |", "|  |", "|vv|", "|  |" };
-        private static string[] _startGridWest = { "----", " <  ", " <  ", "----" };
+        private static string[] _finishNorth = { "|  |", "|##|", "|12|", "|  |" };
+        private static string[] _finishEast = { "----", " 1# ", " 2# ", "----" };
+        private static string[] _finishSouth = { "|  |", "|12|", "|##|", "|  |" };
+        private static string[] _finishWest = { "----", " #1 ", " #2 ", "----" };
 
-        private static string[] _straightHorizontal = { "----", "    ", "    ", "----" };
-        private static string[] _straightVertical = { "|  |", "|  |", "|  |", "|  |" };
+        private static string[] _startGridNorth = { "|  |", "|^^|", "|12|", "|  |" };
+        private static string[] _startGridEast = { "----", " 1> ", " 2> ", "----" };
+        private static string[] _startGridSouth = { "|  |", "|12|", "|vv|", "|  |" };
+        private static string[] _startGridWest = { "----", " <1 ", " <2 ", "----" };
 
-        private static string[] _corner1 = { @"/---", "|   ", "|   ", @"|  /" };
-        private static string[] _corner2 = { @"---\", "   |", "   |", @"\  |" };
-        private static string[] _corner3 = { @"/  |", "   |", "   |", @"---/" };
-        private static string[] _corner4 = { @"|  \", "|   ", "|   ", @"\---" };
+        private static string[] _straightNorth = { "|  |", "|  |", "|12|", "|  |" };
+        private static string[] _straightEast = { "----", "  1 ", "  2 ", "----" };
+        private static string[] _straightSouth = { "|  |", "|21|", "|  |", "|  |" };
+        private static string[] _straightWest = { "----", "  1 ", "  2 ", "----" };
+
+        private static string[] _corner1 = { @"/---", "| 1 ", "|  2", @"|  /" };
+        private static string[] _corner2 = { @"---\", " 1 |", "2  |", @"\  |" };
+        private static string[] _corner3 = { @"/  |", "1  |", " 2 |", @"---/" };
+        private static string[] _corner4 = { @"|  \", "|  1", "| 2 ", @"\---" };
+
         #endregion
 
         private static Vector2 _cursorPosition;
@@ -46,14 +51,13 @@ namespace RaceSimulator
             _cursorPosition.Y = Console.CursorLeft;
         }
 
-
         public static void DrawTrack(Track track)
         {
             ResetConsole(track);
 
             foreach (var section in track.Sections)
             {
-                PrintTrack(GetStrings(section.SectionType));
+                PrintTrack(GetStrings(section.SectionType), section);
                 UpdateDirection(section.SectionType);
                 UpdateCursorPosition();
             }
@@ -71,10 +75,10 @@ namespace RaceSimulator
         {
             SectionTypes.Straight => _currentDirection switch
             {
-                Direction.North => _straightVertical,
-                Direction.East => _straightHorizontal,
-                Direction.South => _straightVertical,
-                Direction.West => _straightHorizontal,
+                Direction.North => _straightNorth,
+                Direction.East => _straightEast,
+                Direction.South => _straightSouth,
+                Direction.West => _straightWest,
             },
             SectionTypes.LeftCorner => _currentDirection switch
             {
@@ -99,7 +103,7 @@ namespace RaceSimulator
             },
             SectionTypes.Finish => _currentDirection switch
             {
-                Direction.North => _finishNorth, 
+                Direction.North => _finishNorth,
                 Direction.East => _finishEast,
                 Direction.South => _finishSouth,
                 Direction.West => _finishWest,
@@ -124,8 +128,7 @@ namespace RaceSimulator
             }
         }
 
-        //Verandert de richting 
-        private static void UpdateDirection(SectionTypes sectionType) 
+        private static void UpdateDirection(SectionTypes sectionType)
         {
             switch (sectionType)
             {
@@ -139,14 +142,15 @@ namespace RaceSimulator
         }
 
         //print elke regel in de string array onder elkaar
-        private static void PrintTrack(string[] strings)
+        private static void PrintTrack(string[] strings, Section section)
         {
             for (int i = 0; i < strings.Length; ++i)
             {
-                WriteAt(strings[i], (int)_cursorPosition.X, (int)++_cursorPosition.Y);
+                WriteAt(UpdateString(strings[i], section), (int)_cursorPosition.X, (int)++_cursorPosition.Y);
             }
         }
 
+        //print elke regel van de string in de console met een meegegeven y en x coordinaat
         private static void WriteAt(string s, int x, int y)
         {
             try
@@ -161,112 +165,15 @@ namespace RaceSimulator
                 Console.WriteLine(e.Message);
             }
         }
-        /*
-        private static void GetStrings(Track track)
-        {
-            foreach (var section in track.Sections)
-            {
-                switch (section.SectionType)
-                {
-                    case SectionTypes.Finish:
-                        switch (_currentDirection)
-                        {
-                            case Direction.East:
-                                PrintTrack(_finishHorizontal);
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.West:
-                                PrintTrack(_finishHorizontal);
-                                UpdateCursorPosition();
-                                break;
-                        }
 
-                        break;
-                    case SectionTypes.LeftCorner:
-                        switch (_currentDirection)
-                        {
-                            case Direction.North:
-                                PrintTrack(_corner2);
-                                _currentDirection = Direction.West;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.East:
-                                PrintTrack(_corner3);
-                                _currentDirection = Direction.North;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.South:
-                                PrintTrack(_corner4);
-                                _currentDirection = Direction.East;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.West:
-                                PrintTrack(_corner1);
-                                _currentDirection = Direction.South;
-                                UpdateCursorPosition();
-                                break;
-                        }
+        private static string UpdateString(string sectionString, Section section) =>
+            ReplaceWithParticipant(sectionString, Data.CurrentRace.GetSectionData(section).Left, 
+                Data.CurrentRace.GetSectionData(section).Right);
 
-                        break;
-                    case SectionTypes.RightCorner:
-                        switch (_currentDirection)
-                        {
-                            case Direction.North:
-                                PrintTrack(_corner1);
-                                _currentDirection = Direction.East;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.East:
-                                PrintTrack(_corner2);
-                                _currentDirection = Direction.South;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.South:
-                                PrintTrack(_corner3);
-                                _currentDirection = Direction.West;
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.West:
-                                PrintTrack(_corner4);
-                                _currentDirection = Direction.North;
-                                UpdateCursorPosition();
-                                break;
-                        }
-
-                        break;
-                    case SectionTypes.StartGrid:
-                        switch (_currentDirection)
-                        {
-                            case Direction.East:
-                                PrintTrack(_startGridHorizontal);
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.West:
-                                PrintTrack(_startGridHorizontal);
-                                UpdateCursorPosition();
-                                break;
-                        }
-
-                        break;
-                    case SectionTypes.Straight:
-                        switch (_currentDirection)
-                        {
-                            case Direction.South:
-                            case Direction.North:
-                                PrintTrack(_straightVertical);
-                                UpdateCursorPosition();
-                                break;
-                            case Direction.West:
-                            case Direction.East:
-                                PrintTrack(_straightHorizontal);
-                                UpdateCursorPosition();
-                                break;
-                        }
-
-                        break;
-                }
-            }
-        }*/
+        //als de participant niet null is dan wordt de placeholder verandert naar de eerste letter van de participants naam 
+        //als de participant well null is dan wordt de placeholder verandert naar " "
+        private static string ReplaceWithParticipant(string sectionString, IParticipant left, IParticipant right) =>
+            sectionString.Replace("1", left != null ? left.Name.Substring(0, 1) : " ")
+                .Replace("2", right != null ? right.Name.Substring(0, 1) : " ");
     }
-
 }

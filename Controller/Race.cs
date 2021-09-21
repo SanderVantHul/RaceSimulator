@@ -45,6 +45,7 @@ namespace Controller
             }
         }
 
+        //test of de participants in de dictionary voorkomen
         public void PrintParticipants()
         {
             var list = new List<Section>();
@@ -60,16 +61,16 @@ namespace Controller
             {
                 try
                 {
-                    Console.WriteLine(_positions[section]);
+                    Console.WriteLine(GetSectionData(section));
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Key niet in dictionary");
                 }
-                
             }
         }
 
+        //update de sectiondata van elk startpunt 
         private void SetStartPositions(Track track, List<IParticipant> participants)
         {
             var startGridSections = new List<Section>();
@@ -85,11 +86,9 @@ namespace Controller
             int participantsIndex = participants.Count - 1; 
             for (int i = 0; participantsIndex >= 0 && !startGridSections.Capacity.Equals(i); ++i)
             {
-                var temp = new SectionData(null, null);
                 if (participantsIndex == 0)
                 {
-                    _positions.Add(startGridSections[i], new SectionData(participants[participantsIndex--],
-                        null));
+                    _positions.Add(startGridSections[i], new SectionData(participants[participantsIndex--], null));
                 }
                 else
                 {
@@ -97,7 +96,6 @@ namespace Controller
                         participants[participantsIndex--]));
                 }
             }
-            
         }
     }
 }

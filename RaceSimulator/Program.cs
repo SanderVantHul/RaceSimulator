@@ -11,37 +11,10 @@ namespace RaceSimulator
         {
             Data.Initialize();
             Data.NextRace();
-            Data.CurrentRace.PrintParticipants();
-            Track zwolle = new Track("Circuit Zwolle", new SectionTypes[]
-            {
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Straight,
-                SectionTypes.RightCorner, SectionTypes.Finish, SectionTypes.RightCorner, SectionTypes.Straight
-            });
+            //Data.CurrentRace.PrintParticipants(); 
 
-            Track elburg = new Track("Circuit Elburg", new SectionTypes[]
-            {
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.StartGrid, SectionTypes.StartGrid,
-                SectionTypes.Finish, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.LeftCorner,
-                SectionTypes.Straight, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.RightCorner,
-                SectionTypes.Straight, SectionTypes.Straight, SectionTypes.LeftCorner, SectionTypes.RightCorner,
-                SectionTypes.Straight, SectionTypes.LeftCorner, SectionTypes.RightCorner, SectionTypes.RightCorner,
-                SectionTypes.LeftCorner, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Straight,
-                SectionTypes.Straight, SectionTypes.Straight
-            });
-
-            Track amsterdam = new Track("Rondje Amsterdam", new SectionTypes[]
-            {
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Finish,
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.StartGrid
-            });
-            Track test = new Track("TestTrack", new SectionTypes[]
-            {
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Finish,
-                SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Straight
-            });
-
-            //VisualizeConsole.Initialize();
-            //VisualizeConsole.DrawTrack(elburg);
+            VisualizeConsole.Initialize();
+            VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
             
             for (;;)
             {
