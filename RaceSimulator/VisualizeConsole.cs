@@ -111,16 +111,11 @@ namespace RaceSimulator
             switch (_currentDirection)
             {
                 case Direction.North:
-                    _cursorPosition.X -= 0;
                     _cursorPosition.Y -= 8;
                     break;
                 case Direction.East:
                     _cursorPosition.X += 4;
                     _cursorPosition.Y -= 4;
-                    break;
-                case Direction.South:
-                    _cursorPosition.X += 0;
-                    _cursorPosition.Y += 0;
                     break;
                 case Direction.West:
                     _cursorPosition.X -= 4;
@@ -129,15 +124,16 @@ namespace RaceSimulator
             }
         }
 
+        //Verandert de richting 
         private static void UpdateDirection(SectionTypes sectionType) 
         {
             switch (sectionType)
             {
                 case SectionTypes.RightCorner:
-                    _currentDirection = (int)_currentDirection > 2 ? Direction.North : ++_currentDirection;
+                    _currentDirection = (int)_currentDirection >= 3 ? Direction.North : ++_currentDirection;
                     break;
                 case SectionTypes.LeftCorner:
-                    _currentDirection = (int)_currentDirection < 1 ? Direction.West : --_currentDirection;
+                    _currentDirection = (int)_currentDirection <= 0 ? Direction.West : --_currentDirection;
                     break;
             }
         }
@@ -147,7 +143,7 @@ namespace RaceSimulator
         {
             for (int i = 0; i < strings.Length; ++i)
             {
-                WriteAt(strings[i], (int)_cursorPosition.X, (int)_cursorPosition.Y++);
+                WriteAt(strings[i], (int)_cursorPosition.X, (int)++_cursorPosition.Y);
             }
         }
 
