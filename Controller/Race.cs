@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Timers;
 using Model;
 
 namespace Controller
@@ -13,6 +14,7 @@ namespace Controller
 
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
+       // private Timer _timer = 
 
         public Race(Track track, List<IParticipant> participants)
         {
@@ -96,6 +98,11 @@ namespace Controller
                         participants[participantsIndex--]));
                 }
             }
+        }
+
+        private static void OnTimedEvent(Object source, ElapsedEventArgs args)
+        {
+
         }
     }
 }

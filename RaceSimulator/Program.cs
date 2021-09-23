@@ -15,7 +15,7 @@ namespace RaceSimulator
 
             VisualizeConsole.Initialize();
             VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
-            
+
             for (;;)
             {
                 Thread.Sleep(100);

@@ -15,18 +15,41 @@ namespace ControllerTest
         [SetUp]
         public void Setup()
         {
-            _race = new Race(null,null);
+            Data.Initialize();
+            Data.NextRace();
+            _race = new Race(Data.CurrentRace.Track, Data.Competition.Participants);
         }
 
         [Test]
-        public void SetStartPositions()
+        public void SetStartPositions_CheckParticipants()
         {
-            var temp = new List<IParticipant>();
-            temp.Add(new Driver("Harry", new Car(), TeamColors.Blue));
-            temp.Add(new Driver("Paul", new Car(), TeamColors.Red));
-            temp.Add(new Driver("Max", new Car(), TeamColors.Green));
+            var NumberOfParticipants = Data.Competition.Participants.Count;
+            foreach (var trackSection in _race.Track.Sections)
+            {
+                var sectiondata = _race.GetSectionData(trackSection);
 
+                if (trackSection.SectionType == SectionTypes.StartGrid)
+                {
+                    if (NumberOfParticipants == 1)
+                    {
+                        Assert.IsNotNull(sectiondata.Left);
+                        Assert.IsNull(sectiondata.Right);
+                    }
+                    else if(NumberOfParticipants <= 0)
+                    {
+                        Assert.IsNull(sectiondata.Left);
+                        Assert.IsNull(sectiondata.Right);
+                    }
+                    else
+                    {
+                        Assert.IsNotNull(sectiondata.Left);
+                        Assert.IsNotNull(sectiondata.Right);
+                    }
+
+                    NumberOfParticipants -= 2;
+                }
+            }
         }
-        
+
     }
 }
