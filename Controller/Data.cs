@@ -19,12 +19,13 @@ namespace Controller
 
         public static void AddParticipants()
         {
-            var d1 = new Driver("Michael", new Car(), TeamColors.Blue);
-            var d2 = new Driver("Sebastian", new Car(), TeamColors.Green);
-            var d3 = new Driver("Lewis", new Car(), TeamColors.Red);
-            var d4 = new Driver("Thomas", new Car(), TeamColors.Grey);
-            var d5 = new Driver("Albert", new Car(), TeamColors.Yellow);
-            var d6 = new Driver("Will", new Car(), TeamColors.Yellow);
+            int speed = 10;
+            var d1 = new Driver("Michael", new Car(speed), TeamColors.Blue);
+            var d2 = new Driver("Sebastian", new Car(speed), TeamColors.Green);
+            var d3 = new Driver("Lewis", new Car(speed), TeamColors.Red);
+            var d4 = new Driver("Thomas", new Car(speed), TeamColors.Grey);
+            var d5 = new Driver("Albert", new Car(speed), TeamColors.Yellow);
+            var d6 = new Driver("Will", new Car(speed), TeamColors.Yellow);
 
             Competition.Participants.Add(d1);
             Competition.Participants.Add(d2);
@@ -36,6 +37,7 @@ namespace Controller
 
         public static void AddTracks()
         {
+            #region Tracks
             Track zwolle = new Track("Circuit Zwolle", new SectionTypes[]
             {
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Straight,
@@ -58,6 +60,7 @@ namespace Controller
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Finish,
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.StartGrid
             });
+            #endregion
 
             Competition.Tracks.Enqueue(elburg);
             Competition.Tracks.Enqueue(zwolle);

@@ -23,33 +23,39 @@ namespace ControllerTest
         [Test]
         public void SetStartPositions_CheckParticipants()
         {
-            var NumberOfParticipants = Data.Competition.Participants.Count;
+            var numberOfParticipants = Data.Competition.Participants.Count;
+            var startGrids = new List<Section>();
             foreach (var trackSection in _race.Track.Sections)
+            {
+                if (trackSection.SectionType == SectionTypes.StartGrid)
+                {
+                    startGrids.Add(trackSection);
+                }
+            }
+
+            startGrids.Reverse();
+            foreach (var trackSection in startGrids)
             {
                 var sectiondata = _race.GetSectionData(trackSection);
 
-                if (trackSection.SectionType == SectionTypes.StartGrid)
+                if (numberOfParticipants == 1)
                 {
-                    if (NumberOfParticipants == 1)
-                    {
-                        Assert.IsNotNull(sectiondata.Left);
-                        Assert.IsNull(sectiondata.Right);
-                    }
-                    else if(NumberOfParticipants <= 0)
-                    {
-                        Assert.IsNull(sectiondata.Left);
-                        Assert.IsNull(sectiondata.Right);
-                    }
-                    else
-                    {
-                        Assert.IsNotNull(sectiondata.Left);
-                        Assert.IsNotNull(sectiondata.Right);
-                    }
-
-                    NumberOfParticipants -= 2;
+                    Assert.IsNotNull(sectiondata.Left);
+                    Assert.IsNull(sectiondata.Right);
                 }
+                else if (numberOfParticipants <= 0)
+                {
+                    Assert.IsNull(sectiondata.Left);
+                    Assert.IsNull(sectiondata.Right);
+                }
+                else
+                {
+                    Assert.IsNotNull(sectiondata.Left);
+                    Assert.IsNotNull(sectiondata.Right);
+                }
+
+                numberOfParticipants -= 2;
             }
         }
-
     }
 }

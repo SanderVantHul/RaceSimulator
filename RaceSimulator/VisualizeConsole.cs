@@ -47,14 +47,17 @@ namespace RaceSimulator
 
         public static void Initialize()
         {
+            Console.CursorVisible = false;
+            Console.Clear();
             _cursorPosition.X = Console.CursorTop;
             _cursorPosition.Y = Console.CursorLeft;
+            ResetConsole(Data.CurrentRace.Track);
+
+            Data.CurrentRace.DriversChanged += OnDriversChanged;
         }
 
         public static void DrawTrack(Track track)
         {
-            ResetConsole(track);
-
             foreach (var section in track.Sections)
             {
                 PrintTrack(GetStrings(section.SectionType), section);
@@ -65,10 +68,10 @@ namespace RaceSimulator
 
         private static void ResetConsole(Track track)
         {
-            Console.Clear();
+            Console.SetCursorPosition(Console.CursorTop, Console.CursorLeft);
             Console.WriteLine(track.Name);
-            _cursorPosition.Y += 4;
-            _cursorPosition.X += 12;
+            _cursorPosition.Y = 4;
+            _cursorPosition.X = 12;
         }
 
         private static string[] GetStrings(SectionTypes sectionType) => sectionType switch
@@ -175,5 +178,10 @@ namespace RaceSimulator
         private static string ReplaceWithParticipant(string sectionString, IParticipant left, IParticipant right) =>
             sectionString.Replace("1", left != null ? left.Name.Substring(0, 1) : " ")
                 .Replace("2", right != null ? right.Name.Substring(0, 1) : " ");
+
+        public static void OnDriversChanged(object sender, DriversChangedEventArgs e)
+        {
+            DrawTrack(e.Track);
+        }
     }
 }

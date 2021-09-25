@@ -11,7 +11,6 @@ namespace RaceSimulator
         {
             Data.Initialize();
             Data.NextRace();
-            //Data.CurrentRace.PrintParticipants(); 
 
             VisualizeConsole.Initialize();
             VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
