@@ -15,7 +15,7 @@ namespace Controller
         public DateTime StartTime { get; set; }
 
         private Random _random;
-        private Dictionary<Section, SectionData> _positions;
+        public Dictionary<Section, SectionData> _positions;
         private Timer _timer;
 
         private const int TimerInterval = 200;
@@ -116,35 +116,26 @@ namespace Controller
 
         private void CheckIfEligibleForNextSection(Section section, bool leftParticipant)
         {
+            //emptySection kijkt of de volgende section links of rechts leeg is, in het geval dat de linkerkant leeg is wordt
+            //emptySection true, in het geval dat de rechterkant leeg is wordt emptySection false. In het geval dat beide
+            //vol zijn wordt emptySection null en dan moet de afstand die bij MoveParticipants weer verwijdert worden want dan staat
+            //de driver stil.
+            bool? emptySection = (_positions[GetNextSection(section)].Left == null) ? true :
+                (_positions[GetNextSection(section)].Right == null) ? false : (bool?)null;
+
             if (leftParticipant)
             {
-                if (_positions[GetNextSection(section)].Left == null)
-                {
-                    RemoveFromSection(section, true, _positions[section].Left, _positions[section].DistanceLeft);
-                }
-                else if(_positions[GetNextSection(section)].Right == null)
-                {
-                    RemoveFromSection(section, false, _positions[section].Left, _positions[section].DistanceLeft);
-                }
+                if (emptySection != null)
+                    RemoveFromSection(section, (bool)emptySection, _positions[section].Left, _positions[section].DistanceLeft);
                 else
-                {
                     _positions[section].DistanceLeft -= CalculateNewPosition(_positions[section].Left);
-                }
             }
             else
             {
-                if (_positions[GetNextSection(section)].Right == null)
-                {
-                    RemoveFromSection(section, false, _positions[section].Right, _positions[section].DistanceRight);
-                }
-                else if (_positions[GetNextSection(section)].Left == null)
-                {
-                    RemoveFromSection(section, true, _positions[section].Right, _positions[section].DistanceRight);
-                }
+                if(emptySection != null)
+                    RemoveFromSection(section, (bool)emptySection, _positions[section].Right, _positions[section].DistanceRight);
                 else
-                {
                     _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
-                }
             }
 
             DriversChanged?.Invoke(this, new DriversChangedEventArgs() { Track = this.Track });
@@ -152,6 +143,9 @@ namespace Controller
 
         private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance)
         {
+            //als de participant van de meegegeven section gelijk is aan de meegegeven participant dan betekent het dat de participant 
+            //van de rechterkant komt en dan moet de oude SectionData van rechts verwijdert worden. Als de participant niet gelijk is,
+            //dan komt de participant van links en dus moet de oude SectionData van links verwijdert worden.
             if (_positions[section].Right == participant)
             {
                 _positions[section].DistanceRight = 0;
@@ -162,6 +156,8 @@ namespace Controller
                 _positions[section].DistanceLeft = 0;
                 _positions[section].Left = null;
             }
+
+            //de bool die mee wordt gegeven geeft aan, aan welke kant de participant komt; links of rechts.
             if (sectionDataLeft)
             {
                 _positions[GetNextSection(section)].Left = participant;
@@ -173,12 +169,6 @@ namespace Controller
                 _positions[GetNextSection(section)].DistanceRight = distance - TrackLength;
             }
         }
-
-        private Section GetNextSection(Section thisSection) =>
-            Track.Sections.Find(thisSection).Next?.Value ?? Track.Sections.First.Value;
-
-        private int CalculateNewPosition(IParticipant participant) =>
-            participant.Equipment.Speed * participant.Equipment.Performance;
 
         private void MoveParticipants()
         {
@@ -196,9 +186,12 @@ namespace Controller
             }
         }
 
-        private void StartTimer()
-        {
-            _timer.Start();
-        }
+        private void StartTimer() { _timer.Start(); }
+
+        public Section GetNextSection(Section thisSection) =>
+            Track.Sections.Find(thisSection).Next?.Value ?? Track.Sections.First.Value;
+
+        private int CalculateNewPosition(IParticipant participant) =>
+            participant.Equipment.Speed * participant.Equipment.Performance;
     }
 }

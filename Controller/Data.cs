@@ -20,12 +20,13 @@ namespace Controller
         public static void AddParticipants()
         {
             int speed = 10;
-            var d1 = new Driver("Michael", new Car(speed), TeamColors.Blue);
-            var d2 = new Driver("Sebastian", new Car(speed), TeamColors.Green);
-            var d3 = new Driver("Lewis", new Car(speed), TeamColors.Red);
-            var d4 = new Driver("Thomas", new Car(speed), TeamColors.Grey);
-            var d5 = new Driver("Albert", new Car(speed), TeamColors.Yellow);
-            var d6 = new Driver("Will", new Car(speed), TeamColors.Yellow);
+            int performance = 0;
+            var d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
+            var d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);
+            var d3 = new Driver("Lewis", new Car(speed, performance), TeamColors.Red);
+            var d4 = new Driver("Thomas", new Car(speed, performance), TeamColors.Grey);
+            var d5 = new Driver("Albert", new Car(speed, performance), TeamColors.Yellow);
+            var d6 = new Driver("Will", new Car(speed, performance), TeamColors.Yellow);
 
             Competition.Participants.Add(d1);
             Competition.Participants.Add(d2);
