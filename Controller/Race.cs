@@ -15,8 +15,9 @@ namespace Controller
         public DateTime StartTime { get; set; }
 
         private Random _random;
-        public Dictionary<Section, SectionData> _positions;
+        private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
+        private int _numberOfLaps;
 
         private const int TimerInterval = 200;
         private const int TrackLength = 100;
@@ -28,6 +29,10 @@ namespace Controller
             Track = track;
             Participants = participants;
             StartTime = new DateTime();
+            /*_numberOfLaps = track.Sections.Count > 15 ? 2 :
+                track.Sections.Count > 10 ? 3 :
+                track.Sections.Count > 5 ? 4 : 5;*/
+            _numberOfLaps = 2;
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
             SetStartPositions(track, participants);
@@ -63,14 +68,7 @@ namespace Controller
         //update de sectiondata van elk startpunt 
         private void SetStartPositions(Track track, List<IParticipant> participants)
         {
-            var startGridSections = new List<Section>();
-            foreach (var section in track.Sections)
-            {
-                if (section.SectionType == SectionTypes.StartGrid)
-                {
-                    startGridSections.Add(section);
-                }
-            }
+            var startGridSections = track.Sections.Where(section => section.SectionType == SectionTypes.StartGrid).ToList();
 
             startGridSections.Reverse();
             startGridSections.TrimExcess();
@@ -94,6 +92,38 @@ namespace Controller
         {
             MoveParticipants();
             UpdateSectionData();
+        }
+
+        private void CheckIfEnoughLaps(Section section, IParticipant participant)
+        {
+            if (participant.NumberOfLaps >= _numberOfLaps)
+            {
+                if (participant == _positions[section].Left)
+                {
+                    _positions[section].Left = null;
+                }
+                else if (participant == _positions[section].Right)
+                {
+                    _positions[section].Right = null;
+                }
+            }
+        }
+
+        private void UpdateLaps(Section section, IParticipant participant)
+        {
+            if (section.SectionType == SectionTypes.Finish)
+            {
+                if (GetSectionData(section).Left == participant)
+                {
+                    GetSectionData(section).Left.NumberOfLaps += 1;
+                    CheckIfEnoughLaps(section, GetSectionData(section).Left);
+                }
+                else if (GetSectionData(section).Right == participant)
+                {
+                    GetSectionData(section).Right.NumberOfLaps += 1;
+                    CheckIfEnoughLaps(section, GetSectionData(section).Right);
+                }
+            }
         }
 
         private void UpdateSectionData()
@@ -126,14 +156,16 @@ namespace Controller
             if (leftParticipant)
             {
                 if (emptySection != null)
-                    RemoveFromSection(section, (bool)emptySection, _positions[section].Left, _positions[section].DistanceLeft);
+                    RemoveFromSection(section, (bool)emptySection, _positions[section].Left,
+                        _positions[section].DistanceLeft);
                 else
                     _positions[section].DistanceLeft -= CalculateNewPosition(_positions[section].Left);
             }
             else
             {
-                if(emptySection != null)
-                    RemoveFromSection(section, (bool)emptySection, _positions[section].Right, _positions[section].DistanceRight);
+                if (emptySection != null)
+                    RemoveFromSection(section, (bool)emptySection, _positions[section].Right,
+                        _positions[section].DistanceRight);
                 else
                     _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
             }
@@ -158,16 +190,19 @@ namespace Controller
             }
 
             //de bool die mee wordt gegeven geeft aan, aan welke kant de participant komt; links of rechts.
+            var nextSection = GetNextSection(section);
             if (sectionDataLeft)
             {
-                _positions[GetNextSection(section)].Left = participant;
-                _positions[GetNextSection(section)].DistanceLeft = distance - TrackLength;
+                _positions[nextSection].Left = participant;
+                _positions[nextSection].DistanceLeft = distance - TrackLength;
             }
             else
             {
-                _positions[GetNextSection(section)].Right = participant;
-                _positions[GetNextSection(section)].DistanceRight = distance - TrackLength;
+                _positions[nextSection].Right = participant;
+                _positions[nextSection].DistanceRight = distance - TrackLength;
             }
+
+            UpdateLaps(nextSection, participant);
         }
 
         private void MoveParticipants()
@@ -186,10 +221,15 @@ namespace Controller
             }
         }
 
-        private void StartTimer() { _timer.Start(); }
+        private void StartTimer()
+        {
+            _timer.Start();
+        }
 
+        //return de volgende sectie in de linkedlist. Als die niet bestaat dan betekent het dat de driver momenteel op de laatste
+        //sectie staat, dus return dan de eerste sectie van de linkedlist.
         public Section GetNextSection(Section thisSection) =>
-            Track.Sections.Find(thisSection).Next?.Value ?? Track.Sections.First.Value;
+            Track.Sections.Find(thisSection)?.Next?.Value ?? Track.Sections.First?.Value;
 
         private int CalculateNewPosition(IParticipant participant) =>
             participant.Equipment.Speed * participant.Equipment.Performance;
