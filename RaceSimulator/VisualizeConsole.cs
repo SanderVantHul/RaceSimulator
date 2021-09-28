@@ -44,16 +44,21 @@ namespace RaceSimulator
 
         private static Vector2 _cursorPosition;
         private static Direction _currentDirection = Direction.North;
+        private static Race _currentRace;
 
-        public static void Initialize()
+        public static void OnNextRace(object sender, NextRaceEventArgs e)
         {
-            Console.CursorVisible = false;
-            Console.Clear();
-            _cursorPosition.X = Console.CursorTop;
-            _cursorPosition.Y = Console.CursorLeft;
-            ResetConsole(Data.CurrentRace.Track);
+            Initialize(e.Race);
 
-            Data.CurrentRace.DriversChanged += OnDriversChanged;
+            DrawTrack(_currentRace.Track);
+        }
+
+        public static void Initialize(Race race)
+        {
+            _currentRace = race;
+            ResetConsole(_currentRace.Track);
+
+            _currentRace.DriversChanged += OnDriversChanged;
         }
 
         public static void DrawTrack(Track track)
@@ -68,6 +73,8 @@ namespace RaceSimulator
 
         private static void ResetConsole(Track track)
         {
+            Console.CursorVisible = false;
+            Console.Clear();
             Console.SetCursorPosition(Console.CursorTop, Console.CursorLeft);
             Console.WriteLine(track.Name);
             _cursorPosition.Y = 4;
@@ -158,7 +165,7 @@ namespace RaceSimulator
         {
             try
             {
-                Console.BackgroundColor = ConsoleColor.Green;
+                Console.BackgroundColor = ConsoleColor.Blue;
                 Console.SetCursorPosition(x, y);
                 Console.Write(s);
             }
@@ -170,8 +177,8 @@ namespace RaceSimulator
         }
 
         private static string UpdateString(string sectionString, Section section) =>
-            ReplaceWithParticipant(sectionString, Data.CurrentRace.GetSectionData(section).Left, 
-                Data.CurrentRace.GetSectionData(section).Right);
+            ReplaceWithParticipant(sectionString, _currentRace.GetSectionData(section).Left, 
+                _currentRace.GetSectionData(section).Right);
 
         //als de participant niet null is dan wordt de placeholder verandert naar de eerste letter van de participants naam 
         //als de participant well null is dan wordt de placeholder verandert naar " "

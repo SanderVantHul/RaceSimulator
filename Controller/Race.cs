@@ -20,19 +20,22 @@ namespace Controller
         private int _numberOfLaps;
 
         private const int TimerInterval = 200;
-        private const int TrackLength = 100;
+        private const int SectionLength = 100;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
+        public event EventHandler RaceFinished;
 
         public Race(Track track, List<IParticipant> participants)
         {
             Track = track;
             Participants = participants;
             StartTime = new DateTime();
-            /*_numberOfLaps = track.Sections.Count > 15 ? 2 :
-                track.Sections.Count > 10 ? 3 :
-                track.Sections.Count > 5 ? 4 : 5;*/
-            _numberOfLaps = 2;
+            _numberOfLaps = track.Sections.Count >= 15 ? 2 :
+                track.Sections.Count >= 10 ? 3 :
+                track.Sections.Count >= 5 ? 4 : 5;
+
+            //_numberOfLaps = 1; //testing purposes 
+
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
             SetStartPositions(track, participants);
@@ -40,8 +43,26 @@ namespace Controller
 
             _timer = new Timer(TimerInterval);
             _timer.Elapsed += OnTimedEvent;
+        }
 
-            StartTimer();
+        private void OnTimedEvent(object source, ElapsedEventArgs args)
+        {
+            //neem de afstand toe voor de participants die de section hebben uitgereden
+            MoveParticipants();
+
+            //zet de participants op de volgende section
+            UpdateSectionData();
+
+            //kijk of de race moet stoppen
+            CheckRaceFinished();
+        }
+
+        public void CheckRaceFinished()
+        {
+            if (_positions.Values.All(a => a.Left == null && a.Right == null))
+            {
+                RaceFinished?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public SectionData GetSectionData(Section section)
@@ -60,7 +81,7 @@ namespace Controller
         {
             foreach (var participant in Participants)
             {
-                participant.Equipment.Performance = _random.Next(1, 6);
+                participant.Equipment.Performance = _random.Next(5, 6);
                 participant.Equipment.Quality = _random.Next();
             }
         }
@@ -68,9 +89,13 @@ namespace Controller
         //update de sectiondata van elk startpunt 
         private void SetStartPositions(Track track, List<IParticipant> participants)
         {
-            var startGridSections = track.Sections.Where(section => section.SectionType == SectionTypes.StartGrid).ToList();
+            var startGridSections =
+                track.Sections.Where(section => section.SectionType == SectionTypes.StartGrid).ToList();
 
+            //draai de volgorde om zodat de participants op de voorste startsection worden geplaats
             startGridSections.Reverse();
+
+            //haal de excess ruimte van de list weg zodat de capacity van de list overeenkomt met het aantal startgrids
             startGridSections.TrimExcess();
 
             int participantsIndex = participants.Count - 1;
@@ -88,22 +113,18 @@ namespace Controller
             }
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs args)
-        {
-            MoveParticipants();
-            UpdateSectionData();
-        }
-
         private void CheckIfEnoughLaps(Section section, IParticipant participant)
         {
             if (participant.NumberOfLaps >= _numberOfLaps)
             {
                 if (participant == _positions[section].Left)
                 {
+                    _positions[section].Left.NumberOfLaps = -1;
                     _positions[section].Left = null;
                 }
                 else if (participant == _positions[section].Right)
                 {
+                    _positions[section].Right.NumberOfLaps = -1;
                     _positions[section].Right = null;
                 }
             }
@@ -128,7 +149,7 @@ namespace Controller
 
         private void UpdateSectionData()
         {
-            bool CheckDistance(int distance) => distance > TrackLength;
+            bool CheckDistance(int distance) => distance > SectionLength;
 
             foreach (var position in _positions)
             {
@@ -170,7 +191,7 @@ namespace Controller
                     _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
             }
 
-            DriversChanged?.Invoke(this, new DriversChangedEventArgs() { Track = this.Track });
+            DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
         }
 
         private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance)
@@ -194,12 +215,12 @@ namespace Controller
             if (sectionDataLeft)
             {
                 _positions[nextSection].Left = participant;
-                _positions[nextSection].DistanceLeft = distance - TrackLength;
+                _positions[nextSection].DistanceLeft = distance - SectionLength;
             }
             else
             {
                 _positions[nextSection].Right = participant;
-                _positions[nextSection].DistanceRight = distance - TrackLength;
+                _positions[nextSection].DistanceRight = distance - SectionLength;
             }
 
             UpdateLaps(nextSection, participant);
@@ -221,7 +242,14 @@ namespace Controller
             }
         }
 
-        private void StartTimer()
+        public void Dispose()
+        {
+            DriversChanged = null;
+            _timer.Stop();
+            RaceFinished = null;
+        }
+
+        public void StartTimer()
         {
             _timer.Start();
         }

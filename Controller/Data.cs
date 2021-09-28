@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Model;
 
@@ -10,6 +11,8 @@ namespace Controller
         public static Competition Competition { get; set; }
         public static Race CurrentRace { get; set; }
 
+        public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
+
         public static void Initialize()
         {
             Competition = new Competition();
@@ -19,7 +22,7 @@ namespace Controller
 
         public static void AddParticipants()
         {
-            int speed = 10;
+            int speed = 30;
             int performance = 0;
             var d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
             var d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);
@@ -64,15 +67,32 @@ namespace Controller
             #endregion
 
             Competition.Tracks.Enqueue(elburg);
-            Competition.Tracks.Enqueue(zwolle);
             Competition.Tracks.Enqueue(amsterdam);
+            Competition.Tracks.Enqueue(zwolle);
         }
 
         public static void NextRace()
         {
+            CurrentRace?.Dispose();
+
             var tempTrack = Competition.NextTrack();
-            CurrentRace = tempTrack != null ? 
-                new Race(tempTrack, Competition.Participants) : null;
+
+            if (tempTrack != null)
+            {
+                CurrentRace = new Race(tempTrack, Competition.Participants);
+                CurrentRace.RaceFinished += OnRaceFinished;
+                NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
+                CurrentRace.StartTimer();
+            }
+            else
+            {
+                CurrentRace = null;
+            }
+        }
+
+        private static void OnRaceFinished(object sender, EventArgs e)
+        {
+            NextRace();
         }
     }
 }

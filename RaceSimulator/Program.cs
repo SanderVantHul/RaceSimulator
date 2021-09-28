@@ -10,10 +10,11 @@ namespace RaceSimulator
         static void Main(string[] args)
         {
             Data.Initialize();
+            Data.NextRaceEvent += VisualizeConsole.OnNextRace;
             Data.NextRace();
 
-            VisualizeConsole.Initialize();
-            VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
+            //VisualizeConsole.Initialize(Data.CurrentRace);
+            //VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
 
             for (;;)
             {
