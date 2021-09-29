@@ -75,7 +75,8 @@ namespace RaceSimulator
         {
             Console.CursorVisible = false;
             Console.Clear();
-            Console.SetCursorPosition(Console.CursorTop, Console.CursorLeft);
+            Console.ResetColor();
+            Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
             Console.WriteLine(track.Name);
             _cursorPosition.Y = 4;
             _cursorPosition.X = 12;

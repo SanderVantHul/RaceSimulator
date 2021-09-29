@@ -12,12 +12,14 @@ namespace Controller
     {
         public Track Track { get; }
         public List<IParticipant> Participants { get; set; }
+        public Dictionary<(IParticipant, int), TimeSpan> RaceTimes;
         public DateTime StartTime { get; set; }
 
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
         private int _numberOfLaps;
+        private int _raceNumber;
 
         private const int TimerInterval = 200;
         private const int SectionLength = 100;
@@ -25,10 +27,11 @@ namespace Controller
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
 
-        public Race(Track track, List<IParticipant> participants)
+        public Race(Track track, List<IParticipant> participants, Dictionary<(IParticipant, int), TimeSpan> raceTimes, int raceNumber)
         {
             Track = track;
             Participants = participants;
+            RaceTimes = raceTimes;
             StartTime = new DateTime();
             _numberOfLaps = track.Sections.Count >= 15 ? 2 :
                 track.Sections.Count >= 10 ? 3 :
@@ -38,6 +41,7 @@ namespace Controller
 
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
+            _raceNumber = raceNumber;
             SetStartPositions(track, participants);
             RandomizeEquipment();
 
@@ -45,7 +49,7 @@ namespace Controller
             _timer.Elapsed += OnTimedEvent;
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs args)
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             //breekt de equipment randomly
             UpdateEquipment();
@@ -54,8 +58,9 @@ namespace Controller
             MoveParticipants();
 
             //zet de participants op de volgende section
-            UpdateSectionData();
+            UpdateSectionData(e.SignalTime);
 
+            //update de console
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
 
             //kijk of de race moet stoppen
@@ -66,12 +71,23 @@ namespace Controller
         {
             foreach (var participant in Participants)
             {
-                participant.Equipment.IsBroken = _random.Next(-20,9) > participant.Equipment.Quality && participant.Equipment.Speed > 3;
+                participant.Equipment.IsBroken = _random.Next(-15, 9) > participant.Equipment.Quality &&
+                                                 participant.Equipment.Speed > 5 &&
+                                                 participant.Equipment.Performance > 3;
 
                 if (participant.Equipment.IsBroken)
                 {
                     participant.Equipment.Speed--;
                 }
+            }
+        }
+
+        private void RandomizeEquipment()
+        {
+            foreach (var participant in Participants)
+            {
+                participant.Equipment.Performance = _random.Next(4, 6);
+                participant.Equipment.Quality = _random.Next(6, 20 - participant.Equipment.Performance * 2);
             }
         }
 
@@ -93,15 +109,6 @@ namespace Controller
             var temp = new SectionData(null, null);
             _positions.Add(section, temp);
             return temp;
-        }
-
-        private void RandomizeEquipment()
-        {
-            foreach (var participant in Participants)
-            {
-                participant.Equipment.Performance = _random.Next(3, 6);
-                participant.Equipment.Quality = _random.Next(6, 20 - participant.Equipment.Performance * 2);
-            }
         }
 
         //update de sectiondata van elk startpunt 
@@ -131,41 +138,56 @@ namespace Controller
             }
         }
 
-        private void CheckIfEnoughLaps(Section section, IParticipant participant)
+        private void CheckIfEnoughLaps(Section section, IParticipant participant, DateTime elapsedTime)
         {
             if (participant.NumberOfLaps >= _numberOfLaps)
             {
                 if (participant == _positions[section].Left)
                 {
-                    _positions[section].Left.NumberOfLaps = -1;
                     _positions[section].Left = null;
                 }
                 else if (participant == _positions[section].Right)
                 {
-                    _positions[section].Right.NumberOfLaps = -1;
                     _positions[section].Right = null;
                 }
+                RaceTimes[(participant, _raceNumber)] = elapsedTime.Subtract(participant.StartTime);
+                ResetParticipant(participant);
             }
         }
 
-        private void UpdateLaps(Section section, IParticipant participant)
+        private void ResetParticipant(IParticipant participant)
+        {
+            participant.NumberOfLaps = -1;
+            participant.StartTime = new DateTime();
+            participant.Equipment.Speed = 20;
+        }
+
+        private void UpdateLaps(Section section, IParticipant participant, DateTime elapsedTime)
         {
             if (section.SectionType == SectionTypes.Finish)
             {
                 if (GetSectionData(section).Left == participant)
                 {
-                    GetSectionData(section).Left.NumberOfLaps += 1;
-                    CheckIfEnoughLaps(section, GetSectionData(section).Left);
+                    participant.NumberOfLaps += 1;
+                    if (participant.NumberOfLaps == 0)
+                    {
+                        participant.StartTime = elapsedTime;
+                    }
+                    CheckIfEnoughLaps(section, GetSectionData(section).Left, elapsedTime);
                 }
                 else if (GetSectionData(section).Right == participant)
                 {
-                    GetSectionData(section).Right.NumberOfLaps += 1;
-                    CheckIfEnoughLaps(section, GetSectionData(section).Right);
+                    participant.NumberOfLaps += 1;
+                    if (participant.NumberOfLaps == 0)
+                    {
+                        participant.StartTime = elapsedTime;
+                    }
+                    CheckIfEnoughLaps(section, GetSectionData(section).Right, elapsedTime);
                 }
             }
         }
 
-        private void UpdateSectionData()
+        private void UpdateSectionData(DateTime elapsedTime)
         {
             bool CheckDistance(int distance) => distance > SectionLength;
 
@@ -173,17 +195,17 @@ namespace Controller
             {
                 if (CheckDistance(position.Value.DistanceLeft))
                 {
-                    CheckIfEligibleForNextSection(position.Key, true);
+                    CheckIfEligibleForNextSection(position.Key, true, elapsedTime);
                 }
 
                 if (CheckDistance(position.Value.DistanceRight))
                 {
-                    CheckIfEligibleForNextSection(position.Key, false);
+                    CheckIfEligibleForNextSection(position.Key, false, elapsedTime);
                 }
             }
         }
 
-        private void CheckIfEligibleForNextSection(Section section, bool leftParticipant)
+        private void CheckIfEligibleForNextSection(Section section, bool leftParticipant, DateTime elapsedTime)
         {
             //emptySection kijkt of de volgende section links of rechts leeg is, in het geval dat de linkerkant leeg is wordt
             //emptySection true, in het geval dat de rechterkant leeg is wordt emptySection false. In het geval dat beide
@@ -197,7 +219,7 @@ namespace Controller
                 if (emptySection != null)
                 {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Left,
-                        _positions[section].DistanceLeft);
+                        _positions[section].DistanceLeft, elapsedTime);
                 }
                 else
                 {
@@ -209,7 +231,7 @@ namespace Controller
                 if (emptySection != null)
                 {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Right,
-                        _positions[section].DistanceRight);
+                        _positions[section].DistanceRight, elapsedTime);
                 }
                 else
                 {
@@ -218,7 +240,7 @@ namespace Controller
             }
         }
 
-        private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance)
+        private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance, DateTime elapsedTime)
         {
             //als de participant van de meegegeven section gelijk is aan de meegegeven participant dan betekent het dat de participant 
             //van de rechterkant komt en dan moet de oude SectionData van rechts verwijdert worden. Als de participant niet gelijk is,
@@ -247,7 +269,7 @@ namespace Controller
                 _positions[nextSection].DistanceRight = distance - SectionLength;
             }
 
-            UpdateLaps(nextSection, participant);
+            UpdateLaps(nextSection, participant, elapsedTime);
         }
 
         private void MoveParticipants()
@@ -270,6 +292,7 @@ namespace Controller
         {
             DriversChanged = null;
             _timer.Stop();
+            _timer.Dispose();
             RaceFinished = null;
         }
 

@@ -20,6 +20,7 @@ namespace Model
         IEquipment Equipment { get; set; }
         TeamColors TeamColor { get; set; }
         int NumberOfLaps { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }
 

@@ -17,7 +17,14 @@ namespace ControllerTest
         {
             Data.Initialize();
             Data.NextRace();
-            _race = new Race(Data.CurrentRace.Track, Data.Competition.Participants);
+            _race = new Race(Data.CurrentRace.Track, Data.Competition.Participants,
+                Data.Competition.RaceTimes, 0);
+        }
+
+        [Test]
+        public void Dictionary_notEmpty()
+        {
+            Assert.NotNull(_race.RaceTimes.Keys);
         }
 
         [Test]

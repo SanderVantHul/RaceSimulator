@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Model;
@@ -13,16 +14,20 @@ namespace Controller
 
         public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
 
+        private static int _raceNumber;
+
         public static void Initialize()
         {
             Competition = new Competition();
+            _raceNumber = 1;
             AddParticipants();
             AddTracks();
+            AddParticipantsAndLaps();
         }
 
         public static void AddParticipants()
         {
-            int speed = 10;
+            int speed = 20;
             int performance = 0;
             var d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
             var d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);
@@ -71,6 +76,17 @@ namespace Controller
             Competition.Tracks.Enqueue(zwolle);
         }
 
+        public static void AddParticipantsAndLaps()
+        {
+            for (int j = 1; j <= Competition.Tracks.Count; ++j)
+            {
+                foreach (var participant in Competition.Participants)
+                {
+                    Competition.RaceTimes.Add((participant, j), new TimeSpan());
+                }
+            }
+        }
+
         public static void NextRace()
         {
             CurrentRace?.Dispose();
@@ -79,7 +95,7 @@ namespace Controller
 
             if (tempTrack != null)
             {
-                CurrentRace = new Race(tempTrack, Competition.Participants);
+                CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes, _raceNumber++);
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
                 CurrentRace.StartTimer();
@@ -87,6 +103,24 @@ namespace Controller
             else
             {
                 CurrentRace = null;
+                PrintRaceTimes();
+            }
+        }
+
+        private static void PrintRaceTimes()
+        {
+            Console.Clear();
+            Console.ResetColor();
+            Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
+            for (int i = 1; i < _raceNumber; ++i)
+            {
+                Console.WriteLine($"Race {i} times\n");
+                foreach (var participant in Competition.Participants)
+                {
+                    Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[(participant, i)]}");
+                    
+                }
+                Console.WriteLine();
             }
         }
 
