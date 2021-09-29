@@ -59,6 +59,8 @@ namespace Controller
 
         public void CheckRaceFinished()
         {
+            //als alle SectionData.Left en SectionData.Right in _positions leeg zijn, dan zijn
+            //er geen spelers meer op de track en eindigt de race
             if (_positions.Values.All(a => a.Left == null && a.Right == null))
             {
                 RaceFinished?.Invoke(this, EventArgs.Empty);
@@ -119,14 +121,13 @@ namespace Controller
             {
                 if (participant == _positions[section].Left)
                 {
-                    _positions[section].Left.NumberOfLaps = -1;
                     _positions[section].Left = null;
                 }
                 else if (participant == _positions[section].Right)
                 {
-                    _positions[section].Right.NumberOfLaps = -1;
                     _positions[section].Right = null;
                 }
+                participant.NumberOfLaps = -1;
             }
         }
 
@@ -177,18 +178,26 @@ namespace Controller
             if (leftParticipant)
             {
                 if (emptySection != null)
+                {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Left,
                         _positions[section].DistanceLeft);
+                }
                 else
+                {
                     _positions[section].DistanceLeft -= CalculateNewPosition(_positions[section].Left);
+                }
             }
             else
             {
                 if (emptySection != null)
+                {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Right,
                         _positions[section].DistanceRight);
+                }
                 else
+                {
                     _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
+                }
             }
 
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
