@@ -22,7 +22,7 @@ namespace Controller
 
         public static void AddParticipants()
         {
-            int speed = 30;
+            int speed = 10;
             int performance = 0;
             var d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
             var d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);

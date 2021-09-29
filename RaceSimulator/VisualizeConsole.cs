@@ -183,8 +183,8 @@ namespace RaceSimulator
         //als de participant niet null is dan wordt de placeholder verandert naar de eerste letter van de participants naam 
         //als de participant well null is dan wordt de placeholder verandert naar " "
         private static string ReplaceWithParticipant(string sectionString, IParticipant left, IParticipant right) =>
-            sectionString.Replace("1", left != null ? left.Name.Substring(0, 1) : " ")
-                .Replace("2", right != null ? right.Name.Substring(0, 1) : " ");
+            sectionString.Replace("1", left != null ? left.Equipment.IsBroken ? "@" : left.Name.Substring(0, 1) : " ")
+                .Replace("2", right != null ? right.Equipment.IsBroken ? "@" : right.Name.Substring(0, 1) : " ");
 
         public static void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {

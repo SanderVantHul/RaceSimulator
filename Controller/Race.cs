@@ -47,14 +47,32 @@ namespace Controller
 
         private void OnTimedEvent(object source, ElapsedEventArgs args)
         {
+            //breekt de equipment randomly
+            UpdateEquipment();
+
             //neem de afstand toe voor de participants die de section hebben uitgereden
             MoveParticipants();
 
             //zet de participants op de volgende section
             UpdateSectionData();
 
+            DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
+
             //kijk of de race moet stoppen
             CheckRaceFinished();
+        }
+
+        private void UpdateEquipment()
+        {
+            foreach (var participant in Participants)
+            {
+                participant.Equipment.IsBroken = _random.Next(-20,9) > participant.Equipment.Quality && participant.Equipment.Speed > 3;
+
+                if (participant.Equipment.IsBroken)
+                {
+                    participant.Equipment.Speed--;
+                }
+            }
         }
 
         public void CheckRaceFinished()
@@ -81,8 +99,8 @@ namespace Controller
         {
             foreach (var participant in Participants)
             {
-                participant.Equipment.Performance = _random.Next(5, 6);
-                participant.Equipment.Quality = _random.Next();
+                participant.Equipment.Performance = _random.Next(3, 6);
+                participant.Equipment.Quality = _random.Next(6, 20 - participant.Equipment.Performance * 2);
             }
         }
 
@@ -177,21 +195,27 @@ namespace Controller
             if (leftParticipant)
             {
                 if (emptySection != null)
+                {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Left,
                         _positions[section].DistanceLeft);
+                }
                 else
+                {
                     _positions[section].DistanceLeft -= CalculateNewPosition(_positions[section].Left);
+                }
             }
             else
             {
                 if (emptySection != null)
+                {
                     RemoveFromSection(section, (bool)emptySection, _positions[section].Right,
                         _positions[section].DistanceRight);
+                }
                 else
+                {
                     _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
+                }
             }
-
-            DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
         }
 
         private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance)
@@ -230,12 +254,12 @@ namespace Controller
         {
             foreach (var section in Track.Sections)
             {
-                if (GetSectionData(section).Left != null)
+                if (GetSectionData(section).Left != null && !GetSectionData(section).Left.Equipment.IsBroken)
                 {
                     GetSectionData(section).DistanceLeft += CalculateNewPosition(GetSectionData(section).Left);
                 }
 
-                if (GetSectionData(section).Right != null)
+                if (GetSectionData(section).Right != null && !GetSectionData(section).Right.Equipment.IsBroken)
                 {
                     GetSectionData(section).DistanceRight += CalculateNewPosition(GetSectionData(section).Right);
                 }
