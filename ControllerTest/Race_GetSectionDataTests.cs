@@ -61,7 +61,7 @@ namespace ControllerTest
         public void GetSectionData_SectionDoesExist_ReturnSectionData()
         {
             var section = new Section(SectionTypes.Straight);
-            var driver = new Driver("Henk Bosman", new Car(20, 1), TeamColors.Red);
+            var driver = new Driver("H", new Car(20, 1), TeamColors.Red);
             _race.GetSectionData(section).Left = driver;
 
             var result = _race.GetSectionData(section);
