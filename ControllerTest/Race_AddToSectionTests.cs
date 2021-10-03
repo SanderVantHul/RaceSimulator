@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Controller;
 using Model;
 using NUnit.Framework;
@@ -9,18 +7,12 @@ using NUnit.Framework;
 namespace ControllerTest
 {
     [TestFixture]
-    public class Controller_Race_UpdateSectionData
+    public class Race_AddToSectionTests
     {
         private Race _race;
-        
+
         [SetUp]
         public void SetUp()
-        {
-
-        }
-
-        [Test]
-        public void UpdateSectionData_NoSectionAvailable()
         {
             Track elburg = new Track("Circuit Elburg", new SectionTypes[]
             {
@@ -32,22 +24,36 @@ namespace ControllerTest
                 SectionTypes.LeftCorner, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Straight,
                 SectionTypes.Straight, SectionTypes.Straight
             });
-            
+
             var list = new List<IParticipant>
             {
                 new Driver("m", new Car(10, 5), TeamColors.Blue),
-                new Driver("e", new Car(0, 0), TeamColors.Blue),
-                new Driver("f", new Car(0, 0), TeamColors.Blue)
             };
             _race = new Race(elburg, list, new Dictionary<(IParticipant, int), TimeSpan>(), 0);
+        }
 
-            foreach (var section in _race.Track.Sections)
-            {
-                if (_race.GetSectionData(section).Left?.Name == "e")
-                {
-                    Assert.IsNull(_race.GetSectionData(_race.GetNextSection(section)));
-                }
-            }
+        [Test]
+        public void AddToSection_ParticipantLeft_SectionDataLeftEqualParticipant()
+        {
+            var section = _race.Track.Sections.First.Value;
+            var participant = _race.Participants[0];
+
+            _race.AddToSection(section, true, participant, 120, new DateTime());
+
+            Assert.That(_race.GetSectionData(section).DistanceLeft == 20);
+            Assert.That(_race.GetSectionData(section).Left == participant);
+        }
+
+        [Test]
+        public void AddToSection_ParticipantRight_SectionDataRightEqualParticipant()
+        {
+            var section = _race.Track.Sections.First.Value;
+            var participant = _race.Participants[0];
+
+            _race.AddToSection(section, false, participant, 120, new DateTime());
+
+            Assert.That(_race.GetSectionData(section).DistanceRight == 20);
+            Assert.That(_race.GetSectionData(section).Right == participant);
         }
     }
 }

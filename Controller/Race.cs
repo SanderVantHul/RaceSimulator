@@ -142,13 +142,13 @@ namespace Controller
         {
             if (participant.NumberOfLaps >= _numberOfLaps)
             {
-                if (participant == _positions[section].Left)
+                if (participant == GetSectionData(section).Left)
                 {
-                    _positions[section].Left = null;
+                    GetSectionData(section).Left = null;
                 }
-                else if (participant == _positions[section].Right)
+                else if (participant == GetSectionData(section).Right)
                 {
-                    _positions[section].Right = null;
+                    GetSectionData(section).Right = null;
                 }
                 RaceTimes[(participant, _raceNumber)] = elapsedTime.Subtract(participant.StartTime);
                 ResetParticipant(participant);
@@ -187,7 +187,7 @@ namespace Controller
             }
         }
 
-        private void UpdateSectionData(DateTime elapsedTime)
+        public void UpdateSectionData(DateTime elapsedTime)
         {
             bool CheckDistance(int distance) => distance > SectionLength;
 
@@ -205,74 +205,79 @@ namespace Controller
             }
         }
 
-        private void CheckIfEligibleForNextSection(Section section, bool leftParticipant, DateTime elapsedTime)
+        public void CheckIfEligibleForNextSection(Section section, bool leftParticipant, DateTime elapsedTime)
         {
             //emptySection kijkt of de volgende section links of rechts leeg is, in het geval dat de linkerkant leeg is wordt
             //emptySection true, in het geval dat de rechterkant leeg is wordt emptySection false. In het geval dat beide
             //vol zijn wordt emptySection null en dan moet de afstand die bij MoveParticipants weer verwijdert worden want dan staat
             //de driver stil.
-            bool? emptySection = (_positions[GetNextSection(section)].Left == null) ? true :
-                (_positions[GetNextSection(section)].Right == null) ? false : (bool?)null;
+            bool? emptySection = (GetSectionData(GetNextSection(section)).Left == null) ? true :
+                (GetSectionData(GetNextSection(section)).Right == null) ? false : (bool?)null;
 
             if (leftParticipant)
             {
                 if (emptySection != null)
                 {
-                    RemoveFromSection(section, (bool)emptySection, _positions[section].Left,
-                        _positions[section].DistanceLeft, elapsedTime);
+                    RemoveFromSection(section, (bool)emptySection, GetSectionData(section).Left,
+                        GetSectionData(section).DistanceLeft, elapsedTime);
                 }
                 else
                 {
-                    _positions[section].DistanceLeft -= CalculateNewPosition(_positions[section].Left);
+                    GetSectionData(section).DistanceLeft -= CalculateNewPosition(GetSectionData(section).Left);
                 }
             }
             else
             {
                 if (emptySection != null)
                 {
-                    RemoveFromSection(section, (bool)emptySection, _positions[section].Right,
-                        _positions[section].DistanceRight, elapsedTime);
+                    RemoveFromSection(section, (bool)emptySection, GetSectionData(section).Right,
+                        GetSectionData(section).DistanceRight, elapsedTime);
                 }
                 else
                 {
-                    _positions[section].DistanceRight -= CalculateNewPosition(_positions[section].Right);
+                    GetSectionData(section).DistanceRight -= CalculateNewPosition(GetSectionData(section).Right);
                 }
             }
         }
 
-        private void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance, DateTime elapsedTime)
+        public void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance, DateTime elapsedTime)
         {
             //als de participant van de meegegeven section gelijk is aan de meegegeven participant dan betekent het dat de participant 
             //van de rechterkant komt en dan moet de oude SectionData van rechts verwijdert worden. Als de participant niet gelijk is,
             //dan komt de participant van links en dus moet de oude SectionData van links verwijdert worden.
-            if (_positions[section].Right == participant)
+            if (GetSectionData(section).Right == participant)
             {
-                _positions[section].DistanceRight = 0;
-                _positions[section].Right = null;
+                GetSectionData(section).DistanceRight = 0;
+                GetSectionData(section).Right = null;
             }
             else
             {
-                _positions[section].DistanceLeft = 0;
-                _positions[section].Left = null;
+                GetSectionData(section).DistanceLeft = 0;
+                GetSectionData(section).Left = null;
             }
 
-            //de bool die mee wordt gegeven geeft aan, aan welke kant de participant komt; links of rechts.
-            var nextSection = GetNextSection(section);
-            if (sectionDataLeft)
-            {
-                _positions[nextSection].Left = participant;
-                _positions[nextSection].DistanceLeft = distance - SectionLength;
-            }
-            else
-            {
-                _positions[nextSection].Right = participant;
-                _positions[nextSection].DistanceRight = distance - SectionLength;
-            }
-
-            UpdateLaps(nextSection, participant, elapsedTime);
+            AddToSection(GetNextSection(section), sectionDataLeft, participant, distance, elapsedTime);
         }
 
-        private void MoveParticipants()
+        public void AddToSection(Section section, bool sectionDataLeft, IParticipant participant, int distance,
+            DateTime elapsedTime)
+        {
+            //de bool die mee wordt gegeven geeft aan, aan welke kant de participant komt; links of rechts.
+            if (sectionDataLeft)
+            {
+                GetSectionData(section).Left = participant;
+                GetSectionData(section).DistanceLeft = distance - SectionLength;
+            }
+            else
+            {
+                GetSectionData(section).Right = participant;
+                GetSectionData(section).DistanceRight = distance - SectionLength;
+            }
+
+            UpdateLaps(section, participant, elapsedTime);
+        }
+
+        public void MoveParticipants()
         {
             foreach (var section in Track.Sections)
             {

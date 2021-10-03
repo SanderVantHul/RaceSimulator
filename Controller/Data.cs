@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Model;
 
 namespace Controller
@@ -109,8 +105,8 @@ namespace Controller
 
         private static void PrintRaceTimes()
         {
-            Console.Clear();
             Console.ResetColor();
+            Console.Clear();
             Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
             for (int i = 1; i < _raceNumber; ++i)
             {
