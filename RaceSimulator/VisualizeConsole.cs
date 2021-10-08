@@ -42,6 +42,7 @@ namespace RaceSimulator
 
         #endregion
 
+        private static Vector2 _trackSize;
         private static Vector2 _cursorPosition;
         private static Direction _currentDirection = Direction.North;
         private static Race _currentRace;
@@ -56,6 +57,7 @@ namespace RaceSimulator
         public static void Initialize(Race race)
         {
             _currentRace = race;
+            _trackSize = CalculateTrackSize(race);
             ResetConsole(_currentRace.Track);
 
             _currentRace.DriversChanged += OnDriversChanged;
@@ -78,6 +80,7 @@ namespace RaceSimulator
             Console.Clear();
             Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
             Console.WriteLine(track.Name);
+            Console.WriteLine(_trackSize);
             _cursorPosition.Y = 4;
             _cursorPosition.X = 12;
         }
@@ -137,6 +140,28 @@ namespace RaceSimulator
                     _cursorPosition.Y -= 4;
                     break;
             }
+        }
+
+        //deze methode is alleen hier gezet om te kijken of het wel werkt voor de 
+        //wpf-visualizatie en wordt verder niet in de console gebruikt.
+        private static Vector2 CalculateTrackSize(Race race)
+        {
+            var temp = new Vector2(1, 1);
+            foreach (var section in race.Track.Sections)
+            {
+                if (_currentDirection == Direction.East)
+                {
+                    temp.X++;
+                }
+
+                if (_currentDirection == Direction.South)
+                {
+                    temp.Y++;
+                }
+                UpdateDirection(section.SectionType);
+            }
+
+            return temp;
         }
 
         private static void UpdateDirection(SectionTypes sectionType)

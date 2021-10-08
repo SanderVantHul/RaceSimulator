@@ -12,18 +12,11 @@
     <None Remove="Resources\motorcycle_green.png" />
     <None Remove="Resources\motorcycle_red.png" />
     <None Remove="Resources\motorcycle_yellow.png" />
-    <None Remove="Resources\road_corner1.png" />
-    <None Remove="Resources\road_corner2.png" />
-    <None Remove="Resources\road_corner3.png" />
-    <None Remove="Resources\road_corner4.png" />
-    <None Remove="Resources\road_finish_horizontal.png" />
-    <None Remove="Resources\road_finish_vertical.png" />
-    <None Remove="Resources\road_startgrid_east.png" />
-    <None Remove="Resources\road_startgrid_north.png" />
-    <None Remove="Resources\road_startgrid_south.png" />
-    <None Remove="Resources\road_startgrid_west.png" />
-    <None Remove="Resources\road_straight_horizontal.png" />
-    <None Remove="Resources\road_straight_vertical.png" />
+    <None Remove="Resources\road_cornerLeft.png" />
+    <None Remove="Resources\road_cornerRight.png" />
+    <None Remove="Resources\road_finish.png" />
+    <None Remove="Resources\road_startgrid.png" />
+    <None Remove="Resources\road_straight.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,22 +25,20 @@
     <Content Include="Resources\motorcycle_green.png" />
     <Content Include="Resources\motorcycle_red.png" />
     <Content Include="Resources\motorcycle_yellow.png" />
-    <Content Include="Resources\road_corner1.png" />
-    <Content Include="Resources\road_corner2.png" />
-    <Content Include="Resources\road_corner3.png" />
-    <Content Include="Resources\road_corner4.png" />
-    <Content Include="Resources\road_finish_horizontal.png" />
-    <Content Include="Resources\road_finish_vertical.png" />
-    <Content Include="Resources\road_startgrid_east.png" />
-    <Content Include="Resources\road_startgrid_north.png" />
-    <Content Include="Resources\road_startgrid_south.png" />
-    <Content Include="Resources\road_startgrid_west.png" />
-    <Content Include="Resources\road_straight_horizontal.png" />
-    <Content Include="Resources\road_straight_vertical.png" />
+    <Content Include="Resources\road_cornerRight.png" />
+    <Content Include="Resources\road_cornerLeft.png" />
+    <Content Include="Resources\road_finish.png" />
+    <Content Include="Resources\road_startgrid.png" />
+    <Content Include="Resources\road_straight.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
 </Project>

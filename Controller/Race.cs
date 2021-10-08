@@ -21,7 +21,7 @@ namespace Controller
         private int _numberOfLaps;
         private int _raceNumber;
 
-        private const int TimerInterval = 200;
+        private const int TimerInterval = 1000;
         private const int SectionLength = 100;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
@@ -33,7 +33,7 @@ namespace Controller
             Participants = participants;
             RaceTimes = raceTimes;
             StartTime = new DateTime();
-            _numberOfLaps = track.Sections.Count >= 15 ? 2 :
+            _numberOfLaps = track.Sections.Count >= 15 ? 100 :
                 track.Sections.Count >= 10 ? 3 :
                 track.Sections.Count >= 5 ? 4 : 5;
 

@@ -10,7 +10,7 @@ namespace VisualisationWPF
 {
     public static class EditImage
     {
-        private static Dictionary<string, Bitmap> _imageCache;
+        private static Dictionary<string, Bitmap> _imageCache = new Dictionary<string, Bitmap>();
 
         public static Bitmap GetBitmap(string imageUrl)
         {
@@ -41,7 +41,7 @@ namespace VisualisationWPF
 
                 //verander de kleur
                 var color = new SolidBrush(Color.GreenYellow).Color;
-                Graphics.FromImage(background).Clear(color);
+                Graphics.FromImage(_imageCache[key]).Clear(color);
             }
             return (Bitmap)GetBitmap(key).Clone();
         }

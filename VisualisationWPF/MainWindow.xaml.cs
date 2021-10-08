@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
+using Controller;
+using Model;
 
 namespace VisualisationWPF
 {
@@ -23,6 +14,29 @@ namespace VisualisationWPF
         public MainWindow()
         {
             InitializeComponent();
+            //WindowState = WindowState.Maximized;
+            Data.Initialize();
+            Data.NextRaceEvent += OnNextRace;
+            Data.NextRace();
+        }
+
+        public void OnDriversChanged(object sender, DriversChangedEventArgs e)
+        {
+            this.ImageComponent.Dispatcher.BeginInvoke(
+                DispatcherPriority.Render,
+                new Action(() =>
+                {
+                    this.ImageComponent.Source = null;
+                    this.ImageComponent.Source = Visualize.DrawTrack(e.Track);
+                }));
+        }
+
+        public void OnNextRace(object sender, NextRaceEventArgs e)
+        {
+            EditImage.ClearCache();
+            Visualize.Initialize(e.Race);
+
+            e.Race.DriversChanged += OnDriversChanged;
         }
     }
 }
