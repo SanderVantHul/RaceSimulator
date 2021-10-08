@@ -10,7 +10,7 @@ using Model;
 
 namespace VisualisationWPF
 {
-    public static class Visualize
+    public static class VisualizeWPF
     {
         private enum Direction
         {
@@ -20,7 +20,8 @@ namespace VisualisationWPF
             West
         }
 
-        private static readonly Vector2 _sectionSize = new Vector2(64, 64);
+        private static readonly Vector2 SectionSize = new Vector2(128, 128);
+        private static readonly Vector2 ParticipantSize = new Vector2(SectionSize.X / 3, SectionSize.Y / 6);
 
         private static Vector2 _drawPosition = new Vector2(40, 40);
         private static Vector2 _trackSize;
@@ -46,6 +47,25 @@ namespace VisualisationWPF
 
         #endregion
 
+        #region participants
+
+        private static string _participantBlue =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_blue.png";
+
+        private static string _participantYellow =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_yellow.png";
+
+        private static string _participantRed =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_red.png";
+
+        private static string _participantGreen =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_green.png";
+
+        private static string _participantGrey =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_black.png";
+
+        #endregion
+
         public static void Initialize(Race race)
         {
             _currentRace = race;
@@ -66,8 +86,8 @@ namespace VisualisationWPF
                 UpdateDirection(section.SectionType);
             }
 
-            temp.X *= _sectionSize.X;
-            temp.Y *= _sectionSize.Y;
+            temp.X *= SectionSize.X;
+            temp.Y *= SectionSize.Y;
             return temp;
         }
 
@@ -91,7 +111,8 @@ namespace VisualisationWPF
 
             foreach (var section in track.Sections)
             {
-                DrawSections(GetSectionImage(section.SectionType), g);
+                DrawSection(GetSectionImage(section.SectionType), g);
+                DrawParticipants(_currentRace.GetSectionData(section), g);
                 UpdateDirection(section.SectionType);
                 UpdateDrawPosition();
             }
@@ -99,30 +120,52 @@ namespace VisualisationWPF
             return EditImage.CreateBitmapSourceFromGdiBitmap(background);
         }
 
+        public static void DrawParticipants(SectionData sectionData, Graphics g)
+        {
+            if (sectionData.Left != null)
+            {
+                Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Left.TeamColor));
+                temp.RotateFlip(GetRotation());
+                g.DrawImage(temp, _drawPosition.X + (SectionSize.X / 2), _drawPosition.Y + (SectionSize.Y / 3),
+                    ((int)_currentDirection % 2 == 0) ? ParticipantSize.Y : ParticipantSize.X,
+                    ((int)_currentDirection % 2 != 0) ? ParticipantSize.Y : ParticipantSize.X);
+
+            }
+
+            if (sectionData.Right != null)
+            {
+                Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Right.TeamColor));
+                temp.RotateFlip(GetRotation());
+                g.DrawImage(temp, _drawPosition.X + (SectionSize.X / 3), _drawPosition.Y + (SectionSize.Y / 2),
+                    ((int)_currentDirection % 2 == 0) ? ParticipantSize.Y : ParticipantSize.X,
+                    ((int)_currentDirection % 2 != 0) ? ParticipantSize.Y : ParticipantSize.X);
+            }
+        }
+
         public static void UpdateDrawPosition()
         {
             switch (_currentDirection)
             {
                 case Direction.North:
-                    _drawPosition.Y -= _sectionSize.Y;
+                    _drawPosition.Y -= SectionSize.Y;
                     break;
                 case Direction.East:
-                    _drawPosition.X += _sectionSize.X;
+                    _drawPosition.X += SectionSize.X;
                     break;
                 case Direction.South:
-                    _drawPosition.Y += _sectionSize.Y;
+                    _drawPosition.Y += SectionSize.Y;
                     break;
                 case Direction.West:
-                    _drawPosition.X -= _sectionSize.X;
+                    _drawPosition.X -= SectionSize.X;
                     break;
             }
         }
 
-        private static void DrawSections(Bitmap sectionImage, Graphics g)
+        private static void DrawSection(Bitmap sectionImage, Graphics g)
         {
-            Bitmap bm = new Bitmap(sectionImage);
-            bm.RotateFlip(GetRotation());
-            g.DrawImage(bm, _drawPosition.X, _drawPosition.Y, _sectionSize.X, _sectionSize.Y);
+            Bitmap temp = new Bitmap(sectionImage);
+            temp.RotateFlip(GetRotation());
+            g.DrawImage(temp, _drawPosition.X, _drawPosition.Y, SectionSize.X, SectionSize.Y);
         }
 
         private static Bitmap GetSectionImage(SectionTypes sectionType) => sectionType switch
@@ -139,7 +182,16 @@ namespace VisualisationWPF
             Direction.North => RotateFlipType.RotateNoneFlipNone,
             Direction.East => RotateFlipType.Rotate90FlipNone,
             Direction.South => RotateFlipType.Rotate180FlipNone,
-            Direction.West => RotateFlipType.Rotate270FlipNone,
+            Direction.West => RotateFlipType.Rotate270FlipNone
+        };
+
+        public static Bitmap GetParticipantImage(TeamColors color) => color switch
+        {
+            TeamColors.Blue => EditImage.GetBitmap(_participantBlue),
+            TeamColors.Green => EditImage.GetBitmap(_participantGreen),
+            TeamColors.Grey => EditImage.GetBitmap(_participantGrey),
+            TeamColors.Yellow => EditImage.GetBitmap(_participantYellow),
+            TeamColors.Red => EditImage.GetBitmap(_participantRed)
         };
     }
 }

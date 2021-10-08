@@ -27,14 +27,14 @@ namespace VisualisationWPF
                 new Action(() =>
                 {
                     this.ImageComponent.Source = null;
-                    this.ImageComponent.Source = Visualize.DrawTrack(e.Track);
+                    this.ImageComponent.Source = VisualizeWPF.DrawTrack(e.Track);
                 }));
         }
 
         public void OnNextRace(object sender, NextRaceEventArgs e)
         {
             EditImage.ClearCache();
-            Visualize.Initialize(e.Race);
+            VisualizeWPF.Initialize(e.Race);
 
             e.Race.DriversChanged += OnDriversChanged;
         }

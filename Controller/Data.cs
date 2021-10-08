@@ -99,7 +99,7 @@ namespace Controller
             else
             {
                 CurrentRace = null;
-                PrintRaceTimes();
+                //PrintRaceTimes();
             }
         }
 
