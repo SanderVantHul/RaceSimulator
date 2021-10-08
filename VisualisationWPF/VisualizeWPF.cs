@@ -30,41 +30,44 @@ namespace VisualisationWPF
 
         #region graphics
 
-        private static string _straight =
+        private static readonly string _straight =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_straight.png";
 
-        private static string _cornerRight =
+        private static readonly string _cornerRight =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_cornerRight.png";
 
-        private static string _cornerLeft =
+        private static readonly string _cornerLeft =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_cornerLeft.png";
 
-        private static string _finish =
+        private static readonly string _finish =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_finish.png";
 
-        private static string _startGrid =
+        private static readonly string _startGrid =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_startgrid.png";
 
         #endregion
 
         #region participants
 
-        private static string _participantBlue =
+        private static readonly string _participantBlue =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_blue.png";
 
-        private static string _participantYellow =
+        private static readonly string _participantYellow =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_yellow.png";
 
-        private static string _participantRed =
+        private static readonly string _participantRed =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_red.png";
 
-        private static string _participantGreen =
+        private static readonly string _participantGreen =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_green.png";
 
-        private static string _participantGrey =
+        private static readonly string _participantGrey =
             @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_black.png";
 
         #endregion
+
+        private static readonly string _broken =
+            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\broken.png";
 
         public static void Initialize(Race race)
         {
@@ -122,23 +125,41 @@ namespace VisualisationWPF
 
         public static void DrawParticipants(SectionData sectionData, Graphics g)
         {
+            float participantWidth = ((int)_currentDirection % 2 == 0) ? ParticipantSize.Y : ParticipantSize.X;
+            float participantHeight = ((int)_currentDirection % 2 != 0) ? ParticipantSize.Y : ParticipantSize.X;
+            float brokenWidth = SectionSize.X / 4;
+            float brokenHeight = SectionSize.Y / 4;
+
             if (sectionData.Left != null)
             {
+                float imagePositionX = _drawPosition.X + SectionSize.X / 2; // todo update afstand minder ver
+                float imagePositionY = _drawPosition.Y + (SectionSize.Y / 3.5f);
+
                 Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Left.TeamColor));
                 temp.RotateFlip(GetRotation());
-                g.DrawImage(temp, _drawPosition.X + (SectionSize.X / 2), _drawPosition.Y + (SectionSize.Y / 3),
-                    ((int)_currentDirection % 2 == 0) ? ParticipantSize.Y : ParticipantSize.X,
-                    ((int)_currentDirection % 2 != 0) ? ParticipantSize.Y : ParticipantSize.X);
 
+                //teken de participant
+                g.DrawImage(temp, imagePositionX, imagePositionY, participantWidth, participantHeight);
+
+                //teken broken equipment
+                if (sectionData.Left.Equipment.IsBroken)
+                    g.DrawImage(new Bitmap(_broken), imagePositionX, imagePositionY, brokenWidth, brokenHeight);
             }
 
             if (sectionData.Right != null)
             {
+                float imagePositionX = _drawPosition.X + (SectionSize.X / 4);
+                float imagePositionY = _drawPosition.Y + (SectionSize.Y / 2.5f);
+
                 Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Right.TeamColor));
                 temp.RotateFlip(GetRotation());
-                g.DrawImage(temp, _drawPosition.X + (SectionSize.X / 3), _drawPosition.Y + (SectionSize.Y / 2),
-                    ((int)_currentDirection % 2 == 0) ? ParticipantSize.Y : ParticipantSize.X,
-                    ((int)_currentDirection % 2 != 0) ? ParticipantSize.Y : ParticipantSize.X);
+
+                //teken de participant
+                g.DrawImage(temp, imagePositionX, imagePositionY, participantWidth, participantHeight);
+
+                //teken broken equipment
+                if (sectionData.Right.Equipment.IsBroken)
+                    g.DrawImage(new Bitmap(_broken), imagePositionX, imagePositionY, brokenWidth, brokenHeight);
             }
         }
 

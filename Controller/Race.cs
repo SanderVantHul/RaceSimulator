@@ -21,7 +21,7 @@ namespace Controller
         private int _numberOfLaps;
         private int _raceNumber;
 
-        private const int TimerInterval = 200;
+        private const int TimerInterval = 1000;
         private const int SectionLength = 100;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
@@ -130,6 +130,7 @@ namespace Controller
                 {
                     _positions.Add(startGridSections[i], new SectionData(participants[participantsIndex--], null));
                 }
+
                 else
                 {
                     _positions.Add(startGridSections[i], new SectionData(participants[participantsIndex--],

@@ -33,11 +33,11 @@ namespace Controller
             var d6 = new Driver("Will", new Car(speed, performance), TeamColors.Yellow);
 
             Competition.Participants.Add(d1);
-            Competition.Participants.Add(d2);
-            Competition.Participants.Add(d3);
-            Competition.Participants.Add(d4);
-            Competition.Participants.Add(d5);
-            Competition.Participants.Add(d6);
+            //Competition.Participants.Add(d2);
+            //Competition.Participants.Add(d3);
+            //Competition.Participants.Add(d4);
+            //Competition.Participants.Add(d5);
+            //Competition.Participants.Add(d6);
         }
 
         public static void AddTracks()
