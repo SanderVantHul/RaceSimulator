@@ -21,8 +21,8 @@ namespace Controller
         private int _numberOfLaps;
         private int _raceNumber;
 
-        private const int TimerInterval = 1000;
-        private const int SectionLength = 100;
+        private const int TimerInterval = 200;
+        private const int SectionLength = 200;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
@@ -212,7 +212,7 @@ namespace Controller
             //emptySection true, in het geval dat de rechterkant leeg is wordt emptySection false. In het geval dat beide
             //vol zijn wordt emptySection null en dan moet de afstand die bij MoveParticipants weer verwijdert worden want dan staat
             //de driver stil.
-            bool? emptySection = (GetSectionData(GetNextSection(section)).Left == null) ? true :
+            bool? emptySection = (GetSectionData(GetNextSection(section)).Left == null) ? true ://todo verander terug baar true / false
                 (GetSectionData(GetNextSection(section)).Right == null) ? false : (bool?)null;
 
             if (leftParticipant)

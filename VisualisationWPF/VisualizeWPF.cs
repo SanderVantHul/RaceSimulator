@@ -115,13 +115,29 @@ namespace VisualisationWPF
             foreach (var section in track.Sections)
             {
                 DrawSection(GetSectionImage(section.SectionType), g);
-                DrawParticipants(_currentRace.GetSectionData(section), g);
                 UpdateDirection(section.SectionType);
+                DrawParticipants(_currentRace.GetSectionData(section), g);
                 UpdateDrawPosition();
             }
 
             return EditImage.CreateBitmapSourceFromGdiBitmap(background);
         }
+
+        public static float GetPositionX(bool left) => _currentDirection switch
+        {
+            Direction.North => left ? _drawPosition.X + SectionSize.X / 1.5f : _drawPosition.X + SectionSize.X / 3,
+            Direction.East => left ? _drawPosition.X + SectionSize.X / 1.5f : _drawPosition.X + SectionSize.X / 3.5f,
+            Direction.South => left ? _drawPosition.X + SectionSize.X / 2.5f : _drawPosition.X + SectionSize.X / 5,
+            Direction.West => left ? _drawPosition.X + SectionSize.X / 4 : _drawPosition.X + SectionSize.X / 2f
+        };
+
+        public static float GetPositionY(bool left) => _currentDirection switch
+        {
+            Direction.North => left ? _drawPosition.Y + SectionSize.Y / 6 : _drawPosition.Y + SectionSize.Y / 3,
+            Direction.East => left ? _drawPosition.Y + SectionSize.Y / 2 : _drawPosition.Y + SectionSize.Y / 4,
+            Direction.South => left ? _drawPosition.Y + SectionSize.Y / 3 : _drawPosition.Y + SectionSize.Y / 1.5f,
+            Direction.West => left ? _drawPosition.Y + SectionSize.Y / 2 : _drawPosition.Y + SectionSize.Y / 4
+        };
 
         public static void DrawParticipants(SectionData sectionData, Graphics g)
         {
@@ -132,8 +148,8 @@ namespace VisualisationWPF
 
             if (sectionData.Left != null)
             {
-                float imagePositionX = _drawPosition.X + SectionSize.X / 2; // todo update afstand minder ver
-                float imagePositionY = _drawPosition.Y + (SectionSize.Y / 3.5f);
+                float imagePositionX = GetPositionX(true);
+                float imagePositionY = GetPositionY(true);
 
                 Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Left.TeamColor));
                 temp.RotateFlip(GetRotation());
@@ -148,8 +164,8 @@ namespace VisualisationWPF
 
             if (sectionData.Right != null)
             {
-                float imagePositionX = _drawPosition.X + (SectionSize.X / 4);
-                float imagePositionY = _drawPosition.Y + (SectionSize.Y / 2.5f);
+                float imagePositionX = GetPositionX(false);
+                float imagePositionY = GetPositionY(false);
 
                 Bitmap temp = new Bitmap(GetParticipantImage(sectionData.Right.TeamColor));
                 temp.RotateFlip(GetRotation());

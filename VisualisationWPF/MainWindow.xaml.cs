@@ -14,7 +14,7 @@ namespace VisualisationWPF
         public MainWindow()
         {
             InitializeComponent();
-            //WindowState = WindowState.Maximized;
+            WindowState = WindowState.Maximized;
             Data.Initialize();
             Data.NextRaceEvent += OnNextRace;
             Data.NextRace();
