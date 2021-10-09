@@ -11,6 +11,9 @@ namespace VisualisationWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CompetitionStatsWindow _competitionStats;
+        private RaceStatsWindow _raceStats;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +40,23 @@ namespace VisualisationWPF
             VisualizeWPF.Initialize(e.Race);
 
             e.Race.DriversChanged += OnDriversChanged;
+        }
+
+        private void MenuItem_OpenCompetitionStatsWindow_Click(object sender, RoutedEventArgs e)
+        {
+            _competitionStats = new CompetitionStatsWindow();
+            _competitionStats.Show();
+        }
+
+        private void MenuItem_OpenRaceStatsWindow_Click(object sender, RoutedEventArgs e)
+        {
+            _raceStats = new RaceStatsWindow();
+            _raceStats.Show();
+        }
+
+        private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
