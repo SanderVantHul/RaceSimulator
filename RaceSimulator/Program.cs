@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Controller;
-using Model;
 
 namespace RaceSimulator
 {
@@ -12,9 +10,6 @@ namespace RaceSimulator
             Data.Initialize();
             Data.NextRaceEvent += VisualizeConsole.OnNextRace;
             Data.NextRace();
-
-            //VisualizeConsole.Initialize(Data.CurrentRace);
-            //VisualizeConsole.DrawTrack(Data.CurrentRace.Track);
 
             for (;;)
             {

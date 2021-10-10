@@ -3,13 +3,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controller="clr-namespace:Controller;assembly=Controller"
-    xmlns:model="clr-namespace:Model;assembly=Model"
+    xmlns:visualisationWpf="clr-namespace:VisualisationWPF"
     x:Class="VisualisationWPF.MainWindow"
     mc:Ignorable="d"
     Title="MainWindow" Height="500" Width="500">
     <Window.DataContext>
-        <model:MainDataContext />
+        <visualisationWpf:MainDataContext />
     </Window.DataContext>
     <Grid Background="Black">
         <Image x:Name="ImageComponent" Margin="14,14,80,14" />
@@ -22,6 +21,6 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <Label Content="{Binding TrackName}" HorizontalAlignment="Left" Margin="412,-5,0,0" VerticalAlignment="Top" />
+        <Label Content="{Binding TrackName}" Margin="0,25,0,0" Foreground="White" />
     </Grid>
 </Window>

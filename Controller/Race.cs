@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Timers;
 using Model;
 
@@ -33,11 +31,11 @@ namespace Controller
             Participants = participants;
             RaceTimes = raceTimes;
             StartTime = new DateTime();
-            _numberOfLaps = track.Sections.Count >= 15 ? 2 :
-                track.Sections.Count >= 10 ? 3 :
-                track.Sections.Count >= 5 ? 4 : 5;
+            //_numberOfLaps = track.Sections.Count >= 15 ? 2 :
+            //    track.Sections.Count >= 10 ? 3 :
+            //    track.Sections.Count >= 5 ? 4 : 5;
 
-            //_numberOfLaps = 1; //testing purposes 
+            _numberOfLaps = 1; //testing purposes 
 
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();

@@ -16,30 +16,31 @@ namespace VisualisationWPF
 
         public MainWindow()
         {
-            InitializeComponent();
             WindowState = WindowState.Maximized;
             Data.Initialize();
             Data.NextRaceEvent += OnNextRace;
             Data.NextRace();
+
+            InitializeComponent();
         }
 
         public void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
-            this.ImageComponent.Dispatcher.BeginInvoke(
+            ImageComponent.Dispatcher.BeginInvoke(
                 DispatcherPriority.Render,
                 new Action(() =>
                 {
-                    this.ImageComponent.Source = null;
-                    this.ImageComponent.Source = VisualizeWPF.DrawTrack(e.Track);
+                    ImageComponent.Source = null;
+                    ImageComponent.Source = VisualizeWPF.DrawTrack(e.Track);
                 }));
         }
 
         public void OnNextRace(object sender, NextRaceEventArgs e)
         {
             EditImage.ClearCache();
-            VisualizeWPF.Initialize(e.Race);
-
             e.Race.DriversChanged += OnDriversChanged;
+            VisualizeWPF.Initialize(e.Race);
+            
         }
 
         private void MenuItem_OpenCompetitionStatsWindow_Click(object sender, RoutedEventArgs e)
