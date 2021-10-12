@@ -40,7 +40,6 @@ namespace VisualisationWPF
             EditImage.ClearCache();
             e.Race.DriversChanged += OnDriversChanged;
             VisualizeWPF.Initialize(e.Race);
-            
         }
 
         private void MenuItem_OpenCompetitionStatsWindow_Click(object sender, RoutedEventArgs e)

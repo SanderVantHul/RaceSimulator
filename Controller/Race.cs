@@ -10,7 +10,7 @@ namespace Controller
     {
         public Track Track { get; }
         public List<IParticipant> Participants { get; set; }
-        public Dictionary<(IParticipant, int), TimeSpan> RaceTimes;
+        public Dictionary<IParticipant, TimeSpan> RaceTimes;
         public DateTime StartTime { get; set; }
 
         private Random _random;
@@ -25,17 +25,17 @@ namespace Controller
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
 
-        public Race(Track track, List<IParticipant> participants, Dictionary<(IParticipant, int), TimeSpan> raceTimes, int raceNumber)
+        public Race(Track track, List<IParticipant> participants, Dictionary<IParticipant, TimeSpan> raceTimes, int raceNumber)
         {
             Track = track;
             Participants = participants;
             RaceTimes = raceTimes;
             StartTime = new DateTime();
-            //_numberOfLaps = track.Sections.Count >= 15 ? 2 :
-            //    track.Sections.Count >= 10 ? 3 :
-            //    track.Sections.Count >= 5 ? 4 : 5;
+            _numberOfLaps = track.Sections.Count >= 15 ? 2 :
+                track.Sections.Count >= 10 ? 3 :
+                track.Sections.Count >= 5 ? 4 : 5;
 
-            _numberOfLaps = 1; //testing purposes 
+            //_numberOfLaps = 2; //testing purposes 
 
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
@@ -58,11 +58,24 @@ namespace Controller
             //zet de participants op de volgende section
             UpdateSectionData(e.SignalTime);
 
+            UpdateTimes(e.SignalTime);
+
             //update de console
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
 
             //kijk of de race moet stoppen
             CheckRaceFinished();
+        }
+
+        public void UpdateTimes(DateTime elapsedTime)
+        {
+            foreach (var participant in Participants)
+            {
+                if (_positions.Values.Any(x => x.Left == participant || x.Right == participant))
+                {
+                    RaceTimes[participant] = elapsedTime.Subtract(participant.StartTime);
+                }
+            }
         }
 
         private void UpdateEquipment()
@@ -91,7 +104,7 @@ namespace Controller
 
         public void CheckRaceFinished()
         {
-            if (_positions.Values.All(a => a.Left == null && a.Right == null))
+            if (_positions.Values.All(p => p.Left == null && p.Right == null))
             {
                 RaceFinished?.Invoke(this, EventArgs.Empty);
             }
@@ -149,16 +162,7 @@ namespace Controller
                 {
                     GetSectionData(section).Right = null;
                 }
-                RaceTimes[(participant, _raceNumber)] = elapsedTime.Subtract(participant.StartTime);
-                ResetParticipant(participant);
             }
-        }
-
-        private void ResetParticipant(IParticipant participant)
-        {
-            participant.NumberOfLaps = -1;
-            participant.StartTime = new DateTime();
-            participant.Equipment.Speed = 20;
         }
 
         private void UpdateLaps(Section section, IParticipant participant, DateTime elapsedTime)
@@ -210,7 +214,7 @@ namespace Controller
             //emptySection true, in het geval dat de rechterkant leeg is wordt emptySection false. In het geval dat beide
             //vol zijn wordt emptySection null en dan moet de afstand die bij MoveParticipants weer verwijdert worden want dan staat
             //de driver stil.
-            bool? emptySection = (GetSectionData(GetNextSection(section)).Left == null) ? true ://todo verander terug baar true / false
+            bool? emptySection = (GetSectionData(GetNextSection(section)).Left == null) ? true :
                 (GetSectionData(GetNextSection(section)).Right == null) ? false : (bool?)null;
 
             if (leftParticipant)

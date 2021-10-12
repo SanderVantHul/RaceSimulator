@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Numerics;
-using System.Text;
 using System.Windows.Media.Imaging;
 using Controller;
 using Model;
@@ -30,44 +26,25 @@ namespace VisualisationWPF
 
         #region graphics
 
-        private static readonly string _straight =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_straight.png";
-
-        private static readonly string _cornerRight =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_cornerRight.png";
-
-        private static readonly string _cornerLeft =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_cornerLeft.png";
-
-        private static readonly string _finish =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_finish.png";
-
-        private static readonly string _startGrid =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\road_startgrid.png";
+        private static readonly string _straight = "..\\..\\..\\Resources\\road_straight.png";
+        private static readonly string _cornerRight = "..\\..\\..\\Resources\\road_cornerRight.png";
+        private static readonly string _cornerLeft = "..\\..\\..\\Resources\\road_cornerLeft.png";
+        private static readonly string _finish = "..\\..\\..\\Resources\\road_finish.png";
+        private static readonly string _startGrid = "..\\..\\..\\Resources\\road_startgrid.png";
 
         #endregion
 
         #region participants
 
-        private static readonly string _participantBlue =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_blue.png";
+        private static readonly string _participantBlue = "..\\..\\..\\Resources\\motorcycle_blue.png";
+        private static readonly string _participantYellow = "..\\..\\..\\Resources\\motorcycle_yellow.png";
+        private static readonly string _participantRed = "..\\..\\..\\Resources\\motorcycle_red.png";
+        private static readonly string _participantGreen = "..\\..\\..\\Resources\\motorcycle_green.png";
+        private static readonly string _participantGrey = "..\\..\\..\\Resources\\motorcycle_black.png";
 
-        private static readonly string _participantYellow =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_yellow.png";
-
-        private static readonly string _participantRed =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_red.png";
-
-        private static readonly string _participantGreen =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_green.png";
-
-        private static readonly string _participantGrey =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\motorcycle_black.png";
+        private static readonly string _broken = "..\\..\\..\\Resources\\broken.png";
 
         #endregion
-
-        private static readonly string _broken =
-            @"C:\Users\Sander\source\repos\RaceSimulator\VisualisationWPF\Resources\broken.png";
 
         public static void Initialize(Race race)
         {

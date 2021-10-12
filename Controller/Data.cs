@@ -18,19 +18,37 @@ namespace Controller
             _raceNumber = 1;
             AddParticipants();
             AddTracks();
-            AddParticipantsAndLaps();
+            AddRaceTimes();
+        }
+
+        public static void ResetParticipant()
+        {
+            foreach (var participant in Competition.Participants)
+            {
+                participant.NumberOfLaps = -1;
+                participant.StartTime = new DateTime();
+                participant.Equipment.Speed = 20;
+            }
+        }
+
+        public static void ResetRaceTimes()
+        {
+            foreach (IParticipant participant in Competition.Participants)
+            {
+                Competition.RaceTimes[participant] = new TimeSpan();
+            }
         }
 
         public static void AddParticipants()
         {
             int speed = 20;
             int performance = 0;
-            var d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
-            var d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);
-            var d3 = new Driver("Lewis", new Car(speed, performance), TeamColors.Red);
-            var d4 = new Driver("Thomas", new Car(speed, performance), TeamColors.Grey);
-            var d5 = new Driver("Albert", new Car(speed, performance), TeamColors.Yellow);
-            var d6 = new Driver("Will", new Car(speed, performance), TeamColors.Yellow);
+            Driver d1 = new Driver("Michael", new Car(speed, performance), TeamColors.Blue);
+            Driver d2 = new Driver("Sebastian", new Car(speed, performance), TeamColors.Green);
+            Driver d3 = new Driver("Lewis", new Car(speed, performance), TeamColors.Red);
+            Driver d4 = new Driver("Thomas", new Car(speed, performance), TeamColors.Grey);
+            Driver d5 = new Driver("Albert", new Car(speed, performance), TeamColors.Yellow);
+            Driver d6 = new Driver("Will", new Car(speed, performance), TeamColors.Yellow);
 
             Competition.Participants.Add(d1);
             Competition.Participants.Add(d2);
@@ -43,6 +61,7 @@ namespace Controller
         public static void AddTracks()
         {
             #region Tracks
+
             Track zwolle = new Track("Circuit Zwolle", new SectionTypes[]
             {
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Straight,
@@ -65,6 +84,7 @@ namespace Controller
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Finish,
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.StartGrid
             });
+
             #endregion
 
             Competition.Tracks.Enqueue(elburg);
@@ -72,14 +92,11 @@ namespace Controller
             Competition.Tracks.Enqueue(zwolle);
         }
 
-        public static void AddParticipantsAndLaps()
+        public static void AddRaceTimes()
         {
-            for (int j = 1; j <= Competition.Tracks.Count; ++j)
+            foreach (IParticipant participant in Competition.Participants)
             {
-                foreach (var participant in Competition.Participants)
-                {
-                    Competition.RaceTimes.Add((participant, j), new TimeSpan());
-                }
+                Competition.RaceTimes.Add(participant, new TimeSpan());
             }
         }
 
@@ -91,6 +108,8 @@ namespace Controller
 
             if (tempTrack != null)
             {
+                ResetParticipant();
+                ResetRaceTimes();
                 CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes, _raceNumber++);
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
@@ -108,19 +127,16 @@ namespace Controller
             Console.ResetColor();
             Console.Clear();
             Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
-            for (int i = 1; i < _raceNumber; ++i)
+
+            foreach (IParticipant participant in Competition.Participants)
             {
-                Console.WriteLine($"Race {i} times\n");
-                foreach (var participant in Competition.Participants)
-                {
-                    Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[(participant, i)]}");
-                    
-                }
-                Console.WriteLine();
+                Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[participant]}");
             }
+
+            Console.WriteLine();
         }
 
-        private static void OnRaceFinished(object sender, EventArgs e)
+        public static void OnRaceFinished(object sender, EventArgs e)
         {
             NextRace();
         }

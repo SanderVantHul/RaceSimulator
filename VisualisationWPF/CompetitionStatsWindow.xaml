@@ -1,15 +1,25 @@
-﻿<Window x:Class="VisualisationWPF.CompetitionStatsWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VisualisationWPF" x:Class="VisualisationWPF.CompetitionStatsWindow"
         mc:Ignorable="d"
         Title="CompetitionStatsWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <local:MainDataContext/>
+    </Window.DataContext>
     <Grid>
-        <ListView>
+        <ListView ItemsSource="{Binding Participants}"> 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Participant Name" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding NumberOfLaps}" Header="Number of laps" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding TeamColor}" Header="TeamColor" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Speed}" Header="Velocity" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Performance}" Header="Performance" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.IsBroken}" Header="Broken" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Quality}" Header="Quality" Width="100"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
