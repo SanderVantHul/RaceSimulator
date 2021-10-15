@@ -20,13 +20,12 @@ namespace VisualisationWPF
             Data.Initialize();
             Data.NextRaceEvent += OnNextRace;
             Data.NextRace();
-
             InitializeComponent();
         }
 
         public void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
-            ImageComponent.Dispatcher.BeginInvoke(
+            ImageComponent?.Dispatcher.BeginInvoke(
                 DispatcherPriority.Render,
                 new Action(() =>
                 {

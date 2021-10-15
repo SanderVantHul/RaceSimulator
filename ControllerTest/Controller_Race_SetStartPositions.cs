@@ -17,7 +17,7 @@ namespace ControllerTest
             Data.Initialize();
             Data.NextRace();
             _race = new Race(Data.CurrentRace.Track, Data.Competition.Participants,
-                Data.Competition.RaceTimes, 0);
+                Data.Competition.RaceTimes);
         }
 
         [Test]
@@ -42,22 +42,22 @@ namespace ControllerTest
             startGrids.Reverse();
             foreach (var trackSection in startGrids)
             {
-                var sectiondata = _race.GetSectionData(trackSection);
+                var sectionData = _race.GetSectionData(trackSection);
 
                 if (numberOfParticipants == 1)
                 {
-                    Assert.IsNotNull(sectiondata.Left);
-                    Assert.IsNull(sectiondata.Right);
+                    Assert.IsNotNull(sectionData.Left);
+                    Assert.IsNull(sectionData.Right);
                 }
                 else if (numberOfParticipants <= 0)
                 {
-                    Assert.IsNull(sectiondata.Left);
-                    Assert.IsNull(sectiondata.Right);
+                    Assert.IsNull(sectionData.Left);
+                    Assert.IsNull(sectionData.Right);
                 }
                 else
                 {
-                    Assert.IsNotNull(sectiondata.Left);
-                    Assert.IsNotNull(sectiondata.Right);
+                    Assert.IsNotNull(sectionData.Left);
+                    Assert.IsNotNull(sectionData.Right);
                 }
 
                 numberOfParticipants -= 2;

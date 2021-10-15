@@ -17,15 +17,15 @@ namespace Controller
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
         private int _numberOfLaps;
-        private int _raceNumber;
+        private int _points;
 
         private const int TimerInterval = 200;
-        private const int SectionLength = 200;
+        private const int SectionLength = 100;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
 
-        public Race(Track track, List<IParticipant> participants, Dictionary<IParticipant, TimeSpan> raceTimes, int raceNumber)
+        public Race(Track track, List<IParticipant> participants, Dictionary<IParticipant, TimeSpan> raceTimes)
         {
             Track = track;
             Participants = participants;
@@ -37,9 +37,10 @@ namespace Controller
 
             //_numberOfLaps = 2; //testing purposes 
 
+            _points = track.Sections.Count(section => section.SectionType == SectionTypes.StartGrid) * 2;
+
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
-            _raceNumber = raceNumber;
             SetStartPositions(track, participants);
             RandomizeEquipment();
 
@@ -60,7 +61,7 @@ namespace Controller
 
             UpdateTimes(e.SignalTime);
 
-            //update de console
+            //update visualisatie
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(Track));
 
             //kijk of de race moet stoppen
@@ -112,13 +113,11 @@ namespace Controller
 
         public SectionData GetSectionData(Section section)
         {
-            if (_positions.ContainsKey(section))
+            var temp = new SectionData(null, null);
+            if (!_positions.TryAdd(section, temp))
             {
                 return _positions[section];
             }
-
-            var temp = new SectionData(null, null);
-            _positions.Add(section, temp);
             return temp;
         }
 
@@ -157,10 +156,12 @@ namespace Controller
                 if (participant == GetSectionData(section).Left)
                 {
                     GetSectionData(section).Left = null;
+                    participant.Points += _points--;
                 }
                 else if (participant == GetSectionData(section).Right)
                 {
                     GetSectionData(section).Right = null;
+                    participant.Points += _points--;
                 }
             }
         }

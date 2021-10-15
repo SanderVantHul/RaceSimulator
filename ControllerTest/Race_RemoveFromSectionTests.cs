@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Controller;
 using Model;
+
 namespace ControllerTest
 {
     [TestFixture]
@@ -27,13 +28,13 @@ namespace ControllerTest
             {
                 new Driver("m", new Car(10, 5), TeamColors.Blue),
             };
-            _race = new Race(elburg, list, new Dictionary<(IParticipant, int), TimeSpan>(), 0);
+            _race = new Race(elburg, list, new Dictionary<IParticipant, TimeSpan>());
         }
 
         [Test]
         public void RemoveFromSection_LeftParticipant_SectionDataLeftEmpty()
         {
-            var section = _race.Track.Sections.First.Value;
+            var section = _race.Track.Sections.First?.Value;
             var participant = _race.Participants[0];
 
             _race.GetSectionData(section).Left = participant;
@@ -46,7 +47,7 @@ namespace ControllerTest
         [Test]
         public void RemoveFromSection_RightParticipant_SectionDataRightEmpty()
         {
-            var section = _race.Track.Sections.First.Value;
+            var section = _race.Track.Sections.First?.Value;
             var participant = _race.Participants[0];
 
             _race.GetSectionData(section).Right = participant;

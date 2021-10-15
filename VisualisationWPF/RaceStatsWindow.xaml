@@ -15,6 +15,7 @@
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Key.Name }" Header="Participant"></GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Value }" Header="Time"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Key.Points}" Header="Points"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

@@ -10,12 +10,9 @@ namespace Controller
 
         public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
 
-        private static int _raceNumber;
-
         public static void Initialize()
         {
             Competition = new Competition();
-            _raceNumber = 1;
             AddParticipants();
             AddTracks();
             AddRaceTimes();
@@ -110,7 +107,7 @@ namespace Controller
             {
                 ResetParticipant();
                 ResetRaceTimes();
-                CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes, _raceNumber++);
+                CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes);
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
                 CurrentRace.StartTimer();
@@ -118,22 +115,7 @@ namespace Controller
             else
             {
                 CurrentRace = null;
-                //PrintRaceTimes();
             }
-        }
-
-        private static void PrintRaceTimes()
-        {
-            Console.ResetColor();
-            Console.Clear();
-            Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
-
-            foreach (IParticipant participant in Competition.Participants)
-            {
-                Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[participant]}");
-            }
-
-            Console.WriteLine();
         }
 
         public static void OnRaceFinished(object sender, EventArgs e)

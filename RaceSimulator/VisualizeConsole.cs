@@ -44,13 +44,6 @@ namespace RaceSimulator
         private static Direction _currentDirection = Direction.North;
         private static Race _currentRace;
 
-        public static void OnNextRace(object sender, NextRaceEventArgs e)
-        {
-            Initialize(e.Race);
-
-            DrawTrack(_currentRace.Track);
-        }
-
         public static void Initialize(Race race)
         {
             _currentRace = race;
@@ -58,6 +51,13 @@ namespace RaceSimulator
             ResetConsole(_currentRace.Track);
 
             _currentRace.DriversChanged += OnDriversChanged;
+        }
+
+        public static void OnNextRace(object sender, NextRaceEventArgs e)
+        {
+            Initialize(e.Race);
+
+            DrawTrack(_currentRace.Track);
         }
 
         public static void DrawTrack(Track track)
@@ -177,9 +177,9 @@ namespace RaceSimulator
         //print elke regel in de string array onder elkaar
         private static void PrintTrack(string[] strings, Section section)
         {
-            for (int i = 0; i < strings.Length; ++i)
+            foreach (var line in strings)
             {
-                WriteAt(UpdateString(strings[i], section), (int)_cursorPosition.X, (int)++_cursorPosition.Y);
+                WriteAt(UpdateString(line, section), (int)_cursorPosition.X, (int)++_cursorPosition.Y);
             }
         }
 

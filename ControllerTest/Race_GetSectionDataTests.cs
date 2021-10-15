@@ -31,7 +31,7 @@ namespace ControllerTest
                 new Driver("e", new Car(0, 0), TeamColors.Blue),
                 new Driver("f", new Car(0, 0), TeamColors.Blue)
             };
-            _race = new Race(elburg, list, new Dictionary<(IParticipant, int), TimeSpan>(), 0);
+            _race = new Race(elburg, list, new Dictionary<IParticipant, TimeSpan>());
         }
 
         [Test]

@@ -29,7 +29,7 @@ namespace ControllerTest
             {
                 new Driver("m", new Car(10, 5), TeamColors.Blue),
             };
-            _race = new Race(elburg, list, new Dictionary<(IParticipant, int), TimeSpan>(), 0);
+            _race = new Race(elburg, list, new Dictionary<IParticipant, TimeSpan>());
         }
 
         [Test]

@@ -42,6 +42,7 @@ namespace VisualisationWPF
                 //verander de kleur
                 var color = new SolidBrush(Color.GreenYellow).Color;
                 Graphics.FromImage(_imageCache[key]).Clear(color);
+
             }
             return (Bitmap)GetBitmap(key).Clone();
         }

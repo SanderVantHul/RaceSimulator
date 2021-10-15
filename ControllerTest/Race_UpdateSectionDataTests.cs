@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Controller;
 using Model;
 using NUnit.Framework;
@@ -31,13 +29,13 @@ namespace ControllerTest
             {
                 new Driver("m", new Car(10, 5), TeamColors.Blue),
             };
-            _race = new Race(elburg, list, new Dictionary<(IParticipant, int), TimeSpan>(), 0);
+            _race = new Race(elburg, list, new Dictionary<IParticipant, TimeSpan>());
         }
 
         [Test]
         public void UpdateSectionData_LeftParticipant_ParticipantMovedToNextSection()
         {
-            var section = _race.Track.Sections.First.Value;
+            var section = _race.Track.Sections.First?.Value;
             var participant = _race.Participants[0];
 
             _race.GetSectionData(section).Left = participant;
@@ -56,7 +54,7 @@ namespace ControllerTest
         [Test]
         public void UpdateSectionData_RightParticipant_ParticipantMovedToNextSection()
         {
-            var section = _race.Track.Sections.First.Value;
+            var section = _race.Track.Sections.First?.Value;
             var participant = _race.Participants[0];
 
             _race.GetSectionData(section).Right = participant;

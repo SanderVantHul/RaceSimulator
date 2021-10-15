@@ -54,7 +54,7 @@ namespace VisualisationWPF
 
         private static Vector2 CalculateTrackSize(Race race)
         {
-            var temp = new Vector2(3, 3);
+            var temp = new Vector2(2, 2);
             foreach (var section in race.Track.Sections)
             {
                 if (_currentDirection == Direction.East)
