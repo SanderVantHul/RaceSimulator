@@ -13,10 +13,10 @@ namespace VisualisationWPF
     {
         public MainWindow()
         {
-            InitializeComponent();
             WindowState = WindowState.Maximized;
             Data.Initialize();
             Data.NextRaceEvent += OnNextRace;
+            InitializeComponent();
             Data.NextRace();
         }
 

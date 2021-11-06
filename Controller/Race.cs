@@ -12,7 +12,7 @@ namespace Controller
     {
         public Track Track { get; }
         public List<IParticipant> Participants { get; set; }
-        public Dictionary<(IParticipant, int), TimeSpan> RaceTimes;
+        public Dictionary<IParticipant, TimeSpan> RaceTimes;
         public DateTime StartTime { get; set; }
 
         private Random _random;
@@ -27,21 +27,20 @@ namespace Controller
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
 
-        public Race(Track track, List<IParticipant> participants, Dictionary<(IParticipant, int), TimeSpan> raceTimes, int raceNumber)
+        public Race(Track track, List<IParticipant> participants, Dictionary<IParticipant, TimeSpan> raceTimes)
         {
             Track = track;
             Participants = participants;
             RaceTimes = raceTimes;
             StartTime = new DateTime();
-            _numberOfLaps = track.Sections.Count >= 15 ? 2 :
-                track.Sections.Count >= 10 ? 3 :
-                track.Sections.Count >= 5 ? 4 : 5;
+            //_numberOfLaps = track.Sections.Count >= 15 ? 2 :
+            //    track.Sections.Count >= 10 ? 3 :
+            //    track.Sections.Count >= 5 ? 4 : 5;
 
-            //_numberOfLaps = 1; //testing purposes 
+            _numberOfLaps = 1; //testing purposes 
 
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
-            _raceNumber = raceNumber;
             SetStartPositions(track, participants);
             RandomizeEquipment();
 
@@ -71,9 +70,9 @@ namespace Controller
         {
             foreach (var participant in Participants)
             {
-                participant.Equipment.IsBroken = _random.Next(-15, 9) > participant.Equipment.Quality &&
-                                                 participant.Equipment.Speed > 5 &&
-                                                 participant.Equipment.Performance > 3;
+                //participant.Equipment.IsBroken = _random.Next(-15, 9) > participant.Equipment.Quality &&
+                //                                 participant.Equipment.Speed > 5 &&
+                //                                 participant.Equipment.Performance > 3;
 
                 if (participant.Equipment.IsBroken)
                 {
@@ -151,7 +150,7 @@ namespace Controller
                 {
                     GetSectionData(section).Right = null;
                 }
-                RaceTimes[(participant, _raceNumber)] = elapsedTime.Subtract(participant.StartTime);
+                RaceTimes[participant] = elapsedTime.Subtract(participant.StartTime);
                 ResetParticipant(participant);
             }
         }

@@ -10,12 +10,9 @@ namespace Controller
 
         public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
 
-        private static int _raceNumber;
-
         public static void Initialize()
         {
             Competition = new Competition();
-            _raceNumber = 1;
             AddParticipants();
             AddTracks();
             AddParticipantsAndLaps();
@@ -43,6 +40,7 @@ namespace Controller
         public static void AddTracks()
         {
             #region Tracks
+
             Track zwolle = new Track("Circuit Zwolle", new SectionTypes[]
             {
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Straight,
@@ -65,11 +63,12 @@ namespace Controller
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.Finish,
                 SectionTypes.RightCorner, SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.StartGrid
             });
+
             #endregion
 
-            Competition.Tracks.Enqueue(elburg);
+            //Competition.Tracks.Enqueue(elburg);
             Competition.Tracks.Enqueue(amsterdam);
-            Competition.Tracks.Enqueue(zwolle);
+            //Competition.Tracks.Enqueue(zwolle);
         }
 
         public static void AddParticipantsAndLaps()
@@ -78,7 +77,7 @@ namespace Controller
             {
                 foreach (var participant in Competition.Participants)
                 {
-                    Competition.RaceTimes.Add((participant, j), new TimeSpan());
+                    Competition.RaceTimes.Add(participant, new TimeSpan());
                 }
             }
         }
@@ -91,7 +90,7 @@ namespace Controller
 
             if (tempTrack != null)
             {
-                CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes, _raceNumber++);
+                CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes);
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
                 CurrentRace.StartTimer();
@@ -108,16 +107,13 @@ namespace Controller
             Console.ResetColor();
             Console.Clear();
             Console.SetCursorPosition(Console.WindowLeft, Console.WindowTop);
-            for (int i = 1; i < _raceNumber; ++i)
+
+            foreach (var participant in Competition.Participants)
             {
-                Console.WriteLine($"Race {i} times\n");
-                foreach (var participant in Competition.Participants)
-                {
-                    Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[(participant, i)]}");
-                    
-                }
-                Console.WriteLine();
+                Console.WriteLine($"{participant.Name}: {Competition.RaceTimes[participant]}");
             }
+
+            Console.WriteLine();
         }
 
         private static void OnRaceFinished(object sender, EventArgs e)
