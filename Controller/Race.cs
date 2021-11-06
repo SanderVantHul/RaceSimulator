@@ -105,7 +105,7 @@ namespace Controller
 
         public void CheckRaceFinished()
         {
-            if (_positions.Values.All(p => p.Left == null && p.Right == null))
+            if (_positions.Values.All(sd => sd.Left == null && sd.Right == null))
             {
                 RaceFinished?.Invoke(this, EventArgs.Empty);
             }
@@ -191,6 +191,25 @@ namespace Controller
             }
         }
 
+        //public void UpdateSectionData2(DateTime elapsedTime)
+        //{
+        //    var sectionDatas = _positions.Values.Where(x => x.Left != null || x.Right != null).ToList();
+        //    bool CheckDistance(int distance) => distance > SectionLength;
+
+        //    foreach (var sectionData in sectionDatas)
+        //    {
+        //        if (CheckDistance(sectionData.DistanceLeft))
+        //        {
+        //            CheckIfEligibleForNextSection(_positions, true, elapsedTime);
+        //        }
+
+        //        if (CheckDistance(sectionData.DistanceRight))
+        //        {
+        //            CheckIfEligibleForNextSection(position.Key, false, elapsedTime);
+        //        }
+        //    }
+        //}
+
         public void UpdateSectionData(DateTime elapsedTime)
         {
             bool CheckDistance(int distance) => distance > SectionLength;
@@ -244,7 +263,8 @@ namespace Controller
             }
         }
 
-        public void RemoveFromSection(Section section, bool sectionDataLeft, IParticipant participant, int distance, DateTime elapsedTime)
+        public void RemoveFromSection(Section section, bool sectionDataLeft, 
+            IParticipant participant, int distance, DateTime elapsedTime)
         {
             //als de participant van de meegegeven section gelijk is aan de meegegeven participant dan betekent het dat de participant 
             //van de rechterkant komt en dan moet de oude SectionData van rechts verwijdert worden. Als de participant niet gelijk is,
@@ -266,7 +286,7 @@ namespace Controller
         public void AddToSection(Section section, bool sectionDataLeft, IParticipant participant, int distance,
             DateTime elapsedTime)
         {
-            //de bool die mee wordt gegeven geeft aan, aan welke kant de participant komt; links of rechts.
+            //de bool die mee wordt gegeven, geeft aan aan welke kant de participant komt; links of rechts.
             if (sectionDataLeft)
             {
                 GetSectionData(section).Left = participant;
@@ -310,10 +330,22 @@ namespace Controller
             _timer.Start();
         }
 
+        public Section GetNextSection2(Section currentSection)
+        {
+            Section nextSection = Track.Sections.Find(currentSection)?.Next?.Value;
+            
+            if (nextSection != null)
+            {
+                return nextSection;
+            }
+
+            return Track.Sections.First.Value;
+        }
+
         //return de volgende sectie in de linkedlist. Als die niet bestaat dan betekent het dat de driver momenteel op de laatste
         //sectie staat, dus return dan de eerste sectie van de linkedlist.
         public Section GetNextSection(Section thisSection) =>
-            Track.Sections.Find(thisSection)?.Next?.Value ?? Track.Sections.First?.Value;
+            Track.Sections.Find(thisSection)?.Next?.Value ?? Track.Sections.FirstOrDefault();
 
         private int CalculateNewPosition(IParticipant participant) =>
             participant.Equipment.Speed * participant.Equipment.Performance;
