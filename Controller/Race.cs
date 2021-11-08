@@ -19,10 +19,9 @@ namespace Controller
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
         private int _numberOfLaps;
-        private int _raceNumber;
 
-        private const int TimerInterval = 200;
-        private const int SectionLength = 200;
+        private const int TimerInterval = 400;
+        private const int SectionLength = 100;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
         public event EventHandler RaceFinished;
@@ -41,7 +40,8 @@ namespace Controller
 
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
-            SetStartPositions(track, participants);
+
+            SetStartPositions(Track, Participants);
             RandomizeEquipment();
 
             _timer = new Timer(TimerInterval);

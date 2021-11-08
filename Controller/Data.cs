@@ -66,19 +66,17 @@ namespace Controller
 
             #endregion
 
-            //Competition.Tracks.Enqueue(elburg);
+            Competition.Tracks.Enqueue(elburg);
             Competition.Tracks.Enqueue(amsterdam);
-            //Competition.Tracks.Enqueue(zwolle);
+            Competition.Tracks.Enqueue(elburg);
+            Competition.Tracks.Enqueue(zwolle);
         }
 
         public static void AddParticipantsAndLaps()
         {
-            for (int j = 1; j <= Competition.Tracks.Count; ++j)
+            foreach (var participant in Competition.Participants)
             {
-                foreach (var participant in Competition.Participants)
-                {
-                    Competition.RaceTimes.Add(participant, new TimeSpan());
-                }
+                Competition.RaceTimes.Add(participant, new TimeSpan());
             }
         }
 
@@ -93,7 +91,6 @@ namespace Controller
                 CurrentRace = new Race(tempTrack, Competition.Participants, Competition.RaceTimes);
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs(CurrentRace));
-                CurrentRace.StartTimer();
             }
             else
             {

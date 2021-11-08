@@ -37,7 +37,7 @@ namespace VisualisationWPF
             {
                 //voeg toe aan dictionary
                 var background = new Bitmap(width, height);
-                _imageCache.Add(key, new Bitmap(background));
+                _imageCache.Add(key, background);
 
                 //verander de kleur
                 var color = new SolidBrush(Color.GreenYellow).Color;
