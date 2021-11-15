@@ -263,7 +263,7 @@ namespace Controller
             }
         }
 
-        public void RemoveFromSection(Section section, bool sectionDataLeft, 
+        public void RemoveFromSection(Section section, bool sectionDataLeft,
             IParticipant participant, int distance, DateTime elapsedTime)
         {
             //als de participant van de meegegeven section gelijk is aan de meegegeven participant dan betekent het dat de participant 

@@ -3,23 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VisualisationWPF" x:Class="VisualisationWPF.CompetitionStatsWindow"
+        xmlns:local="clr-namespace:VisualisationWPF" xmlns:Controller="clr-namespace:Controller;assembly=Controller" x:Class="VisualisationWPF.CompetitionStatsWindow"
         mc:Ignorable="d"
         Title="CompetitionStatsWindow" Height="450" Width="800">
     <Window.DataContext>
-        <local:MainDataContext/>
+        <Controller:CompetitionDataContext/>
     </Window.DataContext>
     <Grid>
-        <ListView ItemsSource="{Binding Participants}"> 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="399*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ListView ItemsSource="{Binding Participants}" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Participant Name" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding NumberOfLaps}" Header="Number of laps" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding TeamColor}" Header="TeamColor" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Speed}" Header="Velocity" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Performance}" Header="Performance" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.IsBroken}" Header="Broken" Width="100"></GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Quality}" Header="Quality" Width="100"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Participant Name" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding NumberOfLaps}" Header="Number of laps" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding TeamColor}" Header="TeamColor" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Speed}" Header="Velocity" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Performance}" Header="Performance" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.IsBroken}" Header="Broken" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Equipment.Quality}" Header="Quality" Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>

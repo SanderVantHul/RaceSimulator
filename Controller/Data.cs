@@ -28,14 +28,6 @@ namespace Controller
             }
         }
 
-        public static void ResetRaceTimes()
-        {
-            foreach (IParticipant participant in Competition.Participants)
-            {
-                Competition.RaceTimes[participant] = new TimeSpan();
-            }
-        }
-
         public static void AddParticipants()
         {
             int speed = 20;
@@ -94,6 +86,14 @@ namespace Controller
             foreach (IParticipant participant in Competition.Participants)
             {
                 Competition.RaceTimes.Add(participant, new TimeSpan());
+            }
+        }
+
+        public static void ResetRaceTimes()
+        {
+            foreach (IParticipant participant in Competition.Participants)
+            {
+                Competition.RaceTimes[participant] = new TimeSpan();
             }
         }
 

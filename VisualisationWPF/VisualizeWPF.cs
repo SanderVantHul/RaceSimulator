@@ -26,7 +26,7 @@ namespace VisualisationWPF
 
         #region graphics
 
-        private static readonly string _straight = "..\\..\\..\\Resources\\road_straight.png";
+        private static readonly string _straight = "Resources/road_straight.png";
         private static readonly string _cornerRight = "..\\..\\..\\Resources\\road_cornerRight.png";
         private static readonly string _cornerLeft = "..\\..\\..\\Resources\\road_cornerLeft.png";
         private static readonly string _finish = "..\\..\\..\\Resources\\road_finish.png";

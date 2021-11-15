@@ -15,7 +15,6 @@ namespace VisualisationWPF
         public string TrackName => Data.CurrentRace.Track.Name;
 
         //maak een list van alle participants
-        public List<Driver> Participants => Data.Competition.Participants.Select(x => (Driver)x).ToList();
 
         public Dictionary<IParticipant, TimeSpan> RaceTimes =>
             Data.Competition.RaceTimes.OrderBy(x => x.Key.Points).ThenBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
@@ -28,7 +27,13 @@ namespace VisualisationWPF
             if (Data.CurrentRace != null)
             {
                 Data.CurrentRace.DriversChanged += OnDriversChanged;
+                Data.NextRaceEvent += OnNextRace;
             }
+        }
+
+        public void OnNextRace(object sender, NextRaceEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void OnDriversChanged(object sender, DriversChangedEventArgs e) =>
